@@ -3,13 +3,17 @@ package nlu.tmdt.dryfood_myapp.dto.response;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-@Data
+@Getter
+@Setter
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ApiResponse<T> {
-    int code;
-    String message;
-    T data;
+public class StoreResponse {
+    Integer id;
+    String name;
+    String description;
+    String url;
+    String phone;
+    String status;
 }
