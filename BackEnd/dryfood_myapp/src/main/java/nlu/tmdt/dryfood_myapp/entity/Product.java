@@ -3,7 +3,6 @@ package nlu.tmdt.dryfood_myapp.entity;
 import java.math.BigDecimal;
 import jakarta.persistence.*;
 import lombok.*;
-import nlu.tmdt.dryfood_myapp.enums.StoreStatus;
 
 @Entity
 @Table(name = "products")
@@ -35,7 +34,13 @@ public class Product extends BaseEntity {
     @Column(name = "price", precision = 10, scale = 2)
     private BigDecimal price;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "status", length = 50)
-    private StoreStatus status;
+    private String status; // "active" | "inactive"
+
+    @OneToMany(
+        mappedBy = "product",
+        cascade = CascadeType.ALL,
+        orphanRemoval = true
+    )
+    private java.util.List<ProductImage> images = new java.util.ArrayList<>();
 }
