@@ -1,0 +1,38 @@
+package nlu.tmdt.dryfood_myapp.dto.request;
+
+import jakarta.validation.constraints.*;
+import lombok.*;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class UpdateProductRequest {
+
+    @NotNull
+    private Integer productId;
+
+    @NotBlank
+    private String name;
+
+    private String description;
+
+    @NotNull
+    @Positive
+    private BigDecimal price;
+
+    @NotNull
+    @PositiveOrZero
+    private Integer quantity;
+
+    @NotBlank
+    private String fruitType;
+
+    @NotNull
+    @Size(min = 1)
+    private List<@NotBlank String> images;
+}
