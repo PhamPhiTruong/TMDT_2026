@@ -26,6 +26,8 @@ public enum ErrorCode {
     STORE_ALREADY_EXISTS(2001, "Store already exists for this user", HttpStatus.CONFLICT),
     STORE_NOT_FOUND(2002, "Store not found", HttpStatus.NOT_FOUND),
     FORBIDDEN_STORE_ACCESS(2003, "You do not have permission to access this store", HttpStatus.FORBIDDEN),
+    STORE_NAME_INVALID(2004, "Store name is invalid", HttpStatus.BAD_REQUEST),
+    STORE_PHONE_INVALID(2005, "Store phone is invalid", HttpStatus.BAD_REQUEST),
 
     // Product
     PRODUCT_NOT_FOUND(3001, "Product not found", HttpStatus.NOT_FOUND),
