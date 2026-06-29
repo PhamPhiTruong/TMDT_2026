@@ -1,6 +1,9 @@
 package nlu.tmdt.dryfood_myapp.entity;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,7 +13,6 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class Product extends BaseEntity {
 
     @Id
@@ -42,5 +44,6 @@ public class Product extends BaseEntity {
         cascade = CascadeType.ALL,
         orphanRemoval = true
     )
-    private java.util.List<ProductImage> images = new java.util.ArrayList<>();
+
+    private List<ProductImage> images = new ArrayList<>();
 }
