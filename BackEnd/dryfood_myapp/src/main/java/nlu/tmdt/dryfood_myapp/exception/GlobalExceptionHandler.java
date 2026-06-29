@@ -37,7 +37,7 @@ public class GlobalExceptionHandler {
         ErrorCode errorCode = exception.getErrorCode();
         ErrorResponse response = ErrorResponse.builder()
                 .code(errorCode.getCode())
-                .message(exception.getMessage())
+                .message(errorCode.getMessage())
                 .timestamp(LocalDateTime.now())
                 .build();
 

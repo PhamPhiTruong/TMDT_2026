@@ -16,39 +16,37 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class StoreController {
-
     StoreService storeService;
+
+    private Integer getCurrentUserId() {
+        // TODO: lấy từ Spring Security
+        return 1;
+    }
 
     @PostMapping("/profile")
     public ApiResponse<StoreResponse> createStore(@Valid @RequestBody CreateStoreRequest request) {
-
-        Integer ownerId = 1; // TODO: lấy từ Security
-
         return ApiResponse.<StoreResponse>builder()
                 .code(200)
                 .message("Store created successfully")
-                .data(storeService.createStore(request, ownerId))
+                .data(storeService.createStore(request, getCurrentUserId()))
                 .build();
     }
 
     @GetMapping("/profile")
     public ApiResponse<StoreResponse> getMyStore() {
-        Integer ownerId = 1; // TODO: lấy từ Security
         return ApiResponse.<StoreResponse>builder()
                 .code(200)
                 .message("Success")
-                .data(storeService.getMyStore(ownerId))
+                .data(storeService.getMyStore(getCurrentUserId()))
                 .build();
     }
 
     @PutMapping("/profile")
     public ApiResponse<StoreResponse> updateStore(@Valid @RequestBody UpdateStoreRequest request) {
-        Integer ownerId = 1; // TODO: lấy từ Security
         return ApiResponse.<StoreResponse>builder()
                 .code(200)
                 .message("Store updated successfully")
-                .data(storeService.updateStore(request, ownerId))
+                .data(storeService.updateStore(request, getCurrentUserId()))
                 .build();
     }
 }
-

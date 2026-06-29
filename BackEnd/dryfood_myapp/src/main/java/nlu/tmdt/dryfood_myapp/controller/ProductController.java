@@ -39,25 +39,26 @@ public class ProductController {
                 .build();
     }
 
-    @GetMapping("/product")
-    public ApiResponse<ProductResponse> getProduct(@RequestParam("id") Integer productId) {
-        ProductResponse response = productService.getProduct(getOwnerId(), productId);
+    @GetMapping("/products/{id}")
+    public ApiResponse<ProductResponse> getProduct(@PathVariable Integer id){
+        ProductResponse response = productService.getProduct(getOwnerId(), id);
         return ApiResponse.<ProductResponse>builder()
                 .data(response)
                 .build();
     }
 
-    @PutMapping("/product")
-    public ApiResponse<ProductResponse> updateProduct(@Valid @RequestBody UpdateProductRequest request) {
+    @PutMapping("/products/{id}")
+    public ApiResponse<ProductResponse> updateProduct(@PathVariable Integer id, @Valid @RequestBody UpdateProductRequest request) {
+        request.setProductId(id);
         ProductResponse response = productService.updateProduct(request, getOwnerId());
         return ApiResponse.<ProductResponse>builder()
                 .data(response)
                 .build();
     }
 
-    @DeleteMapping("/products/delete")
-    public ApiResponse<Void> deleteProduct(@RequestParam("id") Integer productId) {
-        productService.deleteProduct(getOwnerId(), productId);
+    @DeleteMapping("/products/{id}")
+    public ApiResponse<Void> deleteProduct(@PathVariable Integer id) {
+        productService.deleteProduct(getOwnerId(), id);
         return ApiResponse.<Void>builder().build();
     }
 }

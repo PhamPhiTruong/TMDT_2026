@@ -29,9 +29,6 @@ public class UpdateProductRequest {
     @PositiveOrZero
     private Integer quantity;
 
-    @NotBlank
-    private String fruitType;
-
     @NotNull
     @Size(min = 1)
     private List<@NotBlank String> images;

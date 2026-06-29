@@ -22,8 +22,6 @@ public class ProductResponse {
 
     private Integer quantity;
 
-    private String fruitType;
-
     private List<String> images;
 
     private String status;
