@@ -1,4 +1,4 @@
-package nlu.tmdt.dryfood_myapp.dto.request;
+package nlu.tmdt.dryfood_myapp.dto.request.store;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;

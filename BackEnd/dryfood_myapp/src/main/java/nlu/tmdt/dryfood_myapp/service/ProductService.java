@@ -1,8 +1,8 @@
 package nlu.tmdt.dryfood_myapp.service;
 
 import lombok.RequiredArgsConstructor;
-import nlu.tmdt.dryfood_myapp.dto.request.CreateProductRequest;
-import nlu.tmdt.dryfood_myapp.dto.request.UpdateProductRequest;
+import nlu.tmdt.dryfood_myapp.dto.request.product.CreateProductRequest;
+import nlu.tmdt.dryfood_myapp.dto.request.product.UpdateProductRequest;
 import nlu.tmdt.dryfood_myapp.dto.response.ProductResponse;
 import nlu.tmdt.dryfood_myapp.entity.Product;
 import nlu.tmdt.dryfood_myapp.entity.ProductImage;

@@ -1,4 +1,4 @@
-package nlu.tmdt.dryfood_myapp.dto.request;
+package nlu.tmdt.dryfood_myapp.dto.request.product;
 
 import jakarta.validation.constraints.*;
 import lombok.*;
