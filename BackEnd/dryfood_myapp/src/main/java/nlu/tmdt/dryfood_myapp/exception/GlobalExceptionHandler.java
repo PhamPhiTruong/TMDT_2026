@@ -5,11 +5,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.security.access.AccessDeniedException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -64,7 +63,7 @@ public class GlobalExceptionHandler {
         log.warn("Validation error occurred");
 
         List<String> details = exception.getBindingResult().getFieldErrors().stream()
-                .map(FieldError::getDefaultMessage)
+                .map(fieldError -> fieldError.getDefaultMessage())
                 .collect(Collectors.toList());
 
         ErrorCode errorCode = ErrorCode.VALIDATION_ERROR;
