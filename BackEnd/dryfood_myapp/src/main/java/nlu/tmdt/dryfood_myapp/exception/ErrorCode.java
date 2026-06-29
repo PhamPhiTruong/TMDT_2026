@@ -31,6 +31,9 @@ public enum ErrorCode {
 
     // Product
     PRODUCT_NOT_FOUND(3001, "Product not found", HttpStatus.NOT_FOUND),
+    PRODUCT_ALREADY_ON_STORE(3002, "Product already on store", HttpStatus.CONFLICT),
+    PRODUCT_NOT_IN_STORE(3003, "Product does not belong to this store", HttpStatus.BAD_REQUEST),
+    STORE_PRODUCT_NOT_FOUND(3004, "Store product not found", HttpStatus.NOT_FOUND),
     INVALID_PRODUCT(3002, "Invalid product", HttpStatus.BAD_REQUEST),
 
     // Banner
