@@ -6,6 +6,7 @@ import java.util.List;
 
 import jakarta.persistence.*;
 import lombok.*;
+import nlu.tmdt.dryfood_myapp.enums.ProductStatus;
 
 @Entity
 @Table(name = "products")
@@ -36,14 +37,14 @@ public class Product extends BaseEntity {
     @Column(name = "price", precision = 10, scale = 2)
     private BigDecimal price;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", length = 50)
-    private String status; // "active" | "inactive"
+    private ProductStatus status;
 
     @OneToMany(
         mappedBy = "product",
         cascade = CascadeType.ALL,
         orphanRemoval = true
     )
-
     private List<ProductImage> images = new ArrayList<>();
 }

@@ -21,7 +21,6 @@ public class CreateStoreRequest {
     @Size(max = 500)
     private String description;
 
-    @NotBlank
     private String url;
 
     @Pattern(

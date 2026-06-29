@@ -12,8 +12,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdateProductRequest {
-
-    @NotNull
     private Integer productId;
 
     @NotBlank

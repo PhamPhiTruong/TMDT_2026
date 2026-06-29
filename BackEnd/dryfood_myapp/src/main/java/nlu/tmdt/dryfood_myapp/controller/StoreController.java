@@ -20,7 +20,7 @@ public class StoreController {
 
     private Integer getCurrentUserId() {
         // TODO: lấy từ Spring Security
-        return 1;
+        return 2;
     }
 
     @PostMapping("/profile")
