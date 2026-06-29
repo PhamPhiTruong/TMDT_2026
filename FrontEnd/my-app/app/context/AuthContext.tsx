@@ -4,7 +4,6 @@ import {
   createContext,
   useContext,
   useState,
-  useEffect,
   useCallback,
   ReactNode,
 } from 'react';
@@ -26,18 +25,21 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<AuthUser | null>(null);
+// 1. Hàm đọc dữ liệu từ localStorage (Đưa ra ngoài component để tối ưu và tránh lỗi SSR)
+const getInitialUser = (): AuthUser | null => {
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = localStorage.getItem('currentUser');
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+};
 
-  // Khôi phục session từ localStorage khi app load
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem('currentUser');
-      if (raw) setUser(JSON.parse(raw));
-    } catch {
-      // ignore parse error
-    }
-  }, []);
+// 2. Component Provider chính (Chỉ giữ lại duy nhất 1 định nghĩa hàm)
+export function AuthProvider({ children }: { children: ReactNode }) {
+  // Khởi tạo trực tiếp giá trị cho State từ localStorage lúc ứng dụng load
+  const [user, setUser] = useState<AuthUser | null>(() => getInitialUser());
 
   const login = useCallback((data: LoginResponse) => {
     saveTokens(data.accessToken, data.refreshToken);
@@ -53,16 +55,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = useCallback(() => {
     clearTokens();
+    localStorage.removeItem('currentUser'); // Thêm dòng này để xóa sạch dữ liệu localStorage khi logout
     setUser(null);
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, isLoggedIn: !!user, login, logout }}>
-      {children}
-    </AuthContext.Provider>
+      <AuthContext.Provider value={{ user, isLoggedIn: !!user, login, logout }}>
+        {children}
+      </AuthContext.Provider>
   );
 }
 
+// 3. Custom Hook dùng để lấy dữ liệu auth ở các component khác
 export function useAuth() {
   const ctx = useContext(AuthContext);
   if (!ctx) throw new Error('useAuth phải dùng bên trong AuthProvider');
