@@ -1,7 +1,7 @@
 package nlu.tmdt.dryfood_myapp.mapper;
 
-import nlu.tmdt.dryfood_myapp.dto.request.CreateStoreRequest;
-import nlu.tmdt.dryfood_myapp.dto.request.UpdateStoreRequest;
+import nlu.tmdt.dryfood_myapp.dto.request.store.CreateStoreRequest;
+import nlu.tmdt.dryfood_myapp.dto.request.store.UpdateStoreRequest;
 import nlu.tmdt.dryfood_myapp.dto.response.StoreResponse;
 import nlu.tmdt.dryfood_myapp.entity.Store;
 import org.mapstruct.Mapper;
