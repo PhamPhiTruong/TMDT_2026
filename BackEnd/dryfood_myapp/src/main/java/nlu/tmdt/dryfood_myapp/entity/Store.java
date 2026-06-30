@@ -2,14 +2,12 @@ package nlu.tmdt.dryfood_myapp.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-
 @Entity
 @Table(name = "stores")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class Store extends BaseEntity {
 
     @Id
@@ -21,12 +19,18 @@ public class Store extends BaseEntity {
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
 
-    @Column(name = "name", length = 255, nullable = false)
+    @Column(nullable = false)
     private String name;
 
-    @Column(name = "url", length = 255, nullable = false)
+    @Column(length = 500)
+    private String description;
+
+    @Column(nullable = false)
     private String url;
 
-    @Column(name = "status", length = 50)
+    @Column(length = 20)
+    private String phone;
+
+    @Column(length = 50)
     private String status;
 }

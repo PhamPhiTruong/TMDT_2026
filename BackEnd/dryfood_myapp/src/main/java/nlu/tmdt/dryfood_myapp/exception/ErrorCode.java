@@ -26,9 +26,15 @@ public enum ErrorCode {
     STORE_ALREADY_EXISTS(2001, "Store already exists for this user", HttpStatus.CONFLICT),
     STORE_NOT_FOUND(2002, "Store not found", HttpStatus.NOT_FOUND),
     FORBIDDEN_STORE_ACCESS(2003, "You do not have permission to access this store", HttpStatus.FORBIDDEN),
+    STORE_NAME_INVALID(2004, "Store name is invalid", HttpStatus.BAD_REQUEST),
+    STORE_PHONE_INVALID(2005, "Store phone is invalid", HttpStatus.BAD_REQUEST),
 
     // Product
     PRODUCT_NOT_FOUND(3001, "Product not found", HttpStatus.NOT_FOUND),
+    PRODUCT_ALREADY_ON_STORE(3002, "Product already on store", HttpStatus.CONFLICT),
+    PRODUCT_NOT_IN_STORE(3003, "Product does not belong to this store", HttpStatus.BAD_REQUEST),
+    STORE_PRODUCT_NOT_FOUND(3004, "Store product not found", HttpStatus.NOT_FOUND),
+    INVALID_PRODUCT(3002, "Invalid product", HttpStatus.BAD_REQUEST),
 
     // Banner
     BANNER_NOT_FOUND(4001, "Banner not found", HttpStatus.NOT_FOUND)
