@@ -3,10 +3,12 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useCart } from '../app/context/CartContext';
+import { useAuth } from '../app/context/AuthContext';
 import { ShoppingCart, User, MessageSquare, ClipboardList, Search, Menu, X, Phone } from 'lucide-react';
 
 export default function Header() {
   const { cartItems } = useCart();
+  const { isLoggedIn } = useAuth();
   const [mounted, setMounted] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -99,7 +101,7 @@ export default function Header() {
 
           {/* User Account */}
           <Link
-            href="/dang-nhap"
+            href={isLoggedIn ? '/tai-khoan/dia-chi' : '/dang-nhap'}
             className="flex flex-col items-center text-gray-600 hover:text-primary transition-all group"
           >
             <User className="w-5 h-5 group-hover:scale-105 transition-transform" />
