@@ -2,10 +2,13 @@ package nlu.tmdt.dryfood_myapp.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
+
 @Entity
 @Table(name = "stores")
 @Getter
 @Setter
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Store extends BaseEntity {

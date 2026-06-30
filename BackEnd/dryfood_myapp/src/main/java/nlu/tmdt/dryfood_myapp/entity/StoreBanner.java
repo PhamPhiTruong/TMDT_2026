@@ -2,15 +2,16 @@ package nlu.tmdt.dryfood_myapp.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import nlu.tmdt.dryfood_myapp.enums.StoreStatus;
 
 @Entity
 @Table(name = "store_banners")
 @Getter
 @Setter
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class StoreBanner extends BaseEntity {
 
     @Id
