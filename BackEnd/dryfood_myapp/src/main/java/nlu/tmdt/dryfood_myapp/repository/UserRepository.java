@@ -13,7 +13,7 @@ import nlu.tmdt.dryfood_myapp.entity.User;
 @Repository
 // Sửa dòng dưới này: thêm "extends JpaRepository<User, Long>" 
 // (Thay Long bằng kiểu dữ liệu của thuộc tính @Id trong class User của bạn, ví dụ String, Integer...)
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<User, Integer> {
 
     public Optional<User> findByEmail(String email);
 
