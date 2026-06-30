@@ -2,7 +2,7 @@ package nlu.tmdt.dryfood_myapp.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import nlu.tmdt.dryfood_myapp.enums.Status;
+import nlu.tmdt.dryfood_myapp.enums.StoreStatus;
 
 @Entity
 @Table(name = "store_products")
@@ -28,5 +28,5 @@ public class StoreProduct extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", length = 50)
-    private Status status;
+    private StoreStatus status;
 }

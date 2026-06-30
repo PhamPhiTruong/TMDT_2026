@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Roboto, Geist_Mono } from "next/font/google";
 import "../styles/globals.css";
-import { CartProvider } from './context/CartContext';   // ← Sửa dấu ngoặc kép và dấu chấm
+import { CartProvider } from './context/CartContext';
+import { AuthProvider } from './context/AuthContext';
 
 const roboto = Roboto({
   variable: "--font-roboto",
@@ -30,9 +31,11 @@ export default function RootLayout({
       className={`${roboto.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <CartProvider>
-          {children}
-        </CartProvider>
+        <AuthProvider>
+          <CartProvider>
+            {children}
+          </CartProvider>
+        </AuthProvider>
       </body>
     </html>
   );
