@@ -39,7 +39,11 @@ export function useAddresses() {
     }
   }, []);
 
+  // useEffect(() => {
+  //   fetchAddresses();
+  // }, [fetchAddresses]);
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchAddresses();
   }, [fetchAddresses]);
 
