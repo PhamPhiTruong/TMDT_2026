@@ -2,8 +2,11 @@ package nlu.tmdt.dryfood_myapp.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+<<<<<<< Updated upstream
 import lombok.experimental.SuperBuilder;
 
+=======
+>>>>>>> Stashed changes
 @Entity
 @Table(name = "stores")
 @Getter

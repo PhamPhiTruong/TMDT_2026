@@ -27,4 +27,8 @@ public class Order extends BaseEntity {
 
     @Column(name = "status", length = 50)
     private String status;
+    @Column(name = "payment_method") // Tên cột dưới database của bạn
+    private String paymentMethod;
+    private String otpCode;       // Lưu mã OTP xác thực thanh toán (Ví dụ: "123456")
+
 }

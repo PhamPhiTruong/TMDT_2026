@@ -9,6 +9,7 @@ import nlu.tmdt.dryfood_myapp.dto.request.store.UpdateStoreRequest;
 import nlu.tmdt.dryfood_myapp.dto.response.ApiResponse;
 import nlu.tmdt.dryfood_myapp.dto.response.StoreResponse;
 import nlu.tmdt.dryfood_myapp.service.StoreService;
+<<<<<<< Updated upstream
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -17,13 +18,21 @@ import org.springframework.web.bind.annotation.*;
  * Dashboard & quản lý thông tin cửa hàng.
  * Tất cả endpoint đều yêu cầu ROLE_STORE_OWNER.
  */
+=======
+import org.springframework.web.bind.annotation.*;
+
+>>>>>>> Stashed changes
 @RestController
 @RequestMapping("/api/v1/store")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+<<<<<<< Updated upstream
 @PreAuthorize("hasRole('STORE_OWNER')") // Áp dụng bảo mật cho toàn bộ controller
 public class StoreController {
 
+=======
+public class StoreController {
+>>>>>>> Stashed changes
     StoreService storeService;
 
     private Integer getCurrentUserId() {
@@ -31,8 +40,11 @@ public class StoreController {
         return 2;
     }
 
+<<<<<<< Updated upstream
     // --- Quản lý thông tin cửa hàng (Profile) ---
 
+=======
+>>>>>>> Stashed changes
     @PostMapping("/profile")
     public ApiResponse<StoreResponse> createStore(@Valid @RequestBody CreateStoreRequest request) {
         return ApiResponse.<StoreResponse>builder()
@@ -59,6 +71,7 @@ public class StoreController {
                 .data(storeService.updateStore(request, getCurrentUserId()))
                 .build();
     }
+<<<<<<< Updated upstream
 
     // --- Quản lý vận hành (Dashboard & Kho hàng từ nhánh của bạn) ---
 
@@ -90,3 +103,6 @@ public class StoreController {
                 .build();
     }
 }
+=======
+}
+>>>>>>> Stashed changes

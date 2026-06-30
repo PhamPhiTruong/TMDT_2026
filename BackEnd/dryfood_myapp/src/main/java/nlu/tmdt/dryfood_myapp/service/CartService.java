@@ -12,5 +12,6 @@ public interface CartService {
     void clearCart();
 
     CartResponse getCartDetails();
+
     void updateQuantity(Integer cartItemId, Integer quantity);
 }

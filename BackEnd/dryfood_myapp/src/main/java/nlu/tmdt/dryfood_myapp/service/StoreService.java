@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class StoreService {
+<<<<<<< Updated upstream
 
     public Store getStoreByOwner(Integer ownerId) {
         return storeRepository.findByOwnerUserId(ownerId)
@@ -31,6 +32,8 @@ public class StoreService {
                         nlu.tmdt.dryfood_myapp.exception.ErrorCode.STORE_NOT_FOUND
                 ));
     }
+=======
+>>>>>>> Stashed changes
     StoreRepository storeRepository;
     UserRepository userRepository;
     StoreMapper storeMapper;
@@ -50,18 +53,39 @@ public class StoreService {
     }
 
     public StoreResponse getMyStore(Integer ownerId) {
+<<<<<<< Updated upstream
         Store store = getStoreByOwner(ownerId);
+=======
+        Store store = getStore(ownerId);
+>>>>>>> Stashed changes
         return storeMapper.toResponse(store);
     }
 
     public StoreResponse updateStore(UpdateStoreRequest request, Integer ownerId) {
+<<<<<<< Updated upstream
         Store store = getStoreByOwner(ownerId);
+=======
+        Store store = storeRepository.findByOwnerUserId(ownerId)
+                .orElseThrow(() -> new AppException(ErrorCode.STORE_NOT_FOUND));
+
+>>>>>>> Stashed changes
         storeMapper.updateStore(request, store);
         return storeMapper.toResponse(storeRepository.save(store));
     }
 
     private User getOwner(Integer ownerId){
+<<<<<<< Updated upstream
         return userRepository.findById(ownerId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
     }
+=======
+        return userRepository.findById(Integer.valueOf(ownerId))
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+    }
+
+    private Store getStore(Integer ownerId){
+        return storeRepository.findByOwnerUserId(ownerId)
+                .orElseThrow(() -> new AppException(ErrorCode.STORE_NOT_FOUND));
+    }
+>>>>>>> Stashed changes
 }
