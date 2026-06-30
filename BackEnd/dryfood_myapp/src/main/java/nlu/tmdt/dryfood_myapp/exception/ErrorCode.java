@@ -38,7 +38,12 @@ public enum ErrorCode {
 
     // Banner
     BANNER_NOT_FOUND(4001, "Banner not found", HttpStatus.NOT_FOUND),
-    INVALID_BANNER(4002, "Invalid banner", HttpStatus.BAD_REQUEST)
+    INVALID_BANNER(4002, "Invalid banner", HttpStatus.BAD_REQUEST),
+
+    // Coupon
+    COUPON_NOT_FOUND(5001, "Coupon not found", HttpStatus.NOT_FOUND),
+    COUPON_ALREADY_EXISTS(5002, "Coupon already exists", HttpStatus.CONFLICT),
+    INVALID_COUPON(5003, "Invalid coupon", HttpStatus.BAD_REQUEST),
     ;
 
     int code;
