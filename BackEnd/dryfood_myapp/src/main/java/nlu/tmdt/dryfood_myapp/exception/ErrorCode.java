@@ -37,7 +37,8 @@ public enum ErrorCode {
     INVALID_PRODUCT(3002, "Invalid product", HttpStatus.BAD_REQUEST),
 
     // Banner
-    BANNER_NOT_FOUND(4001, "Banner not found", HttpStatus.NOT_FOUND)
+    BANNER_NOT_FOUND(4001, "Banner not found", HttpStatus.NOT_FOUND),
+    INVALID_BANNER(4002, "Invalid banner", HttpStatus.BAD_REQUEST)
     ;
 
     int code;
