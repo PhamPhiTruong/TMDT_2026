@@ -9,19 +9,29 @@ import nlu.tmdt.dryfood_myapp.dto.request.store.UpdateStoreRequest;
 import nlu.tmdt.dryfood_myapp.dto.response.ApiResponse;
 import nlu.tmdt.dryfood_myapp.dto.response.StoreResponse;
 import nlu.tmdt.dryfood_myapp.service.StoreService;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Dashboard & quản lý thông tin cửa hàng.
+ * Tất cả endpoint đều yêu cầu ROLE_STORE_OWNER.
+ */
 @RestController
 @RequestMapping("/api/v1/store")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@PreAuthorize("hasRole('STORE_OWNER')") // Áp dụng bảo mật cho toàn bộ controller
 public class StoreController {
+
     StoreService storeService;
 
     private Integer getCurrentUserId() {
         // TODO: lấy từ Spring Security
         return 2;
     }
+
+    // --- Quản lý thông tin cửa hàng (Profile) ---
 
     @PostMapping("/profile")
     public ApiResponse<StoreResponse> createStore(@Valid @RequestBody CreateStoreRequest request) {
@@ -47,6 +57,36 @@ public class StoreController {
                 .code(200)
                 .message("Store updated successfully")
                 .data(storeService.updateStore(request, getCurrentUserId()))
+                .build();
+    }
+
+    // --- Quản lý vận hành (Dashboard & Kho hàng từ nhánh của bạn) ---
+
+    /**
+     * GET /api/v1/store/dashboard
+     * Thống kê tổng quan: doanh thu, tồn kho, đơn hàng mới, v.v.
+     */
+    @GetMapping("/dashboard")
+    public ApiResponse<Object> getDashboard(Authentication authentication) {
+        // TODO: inject thêm service hoặc dùng storeService để lọc thống kê theo getCurrentUserId()
+        return ApiResponse.builder()
+                .code(200)
+                .message("Dashboard data fetched successfully")
+                .data(null)
+                .build();
+    }
+
+    /**
+     * GET /api/v1/store/inventory
+     * Quản lý kho hàng của cửa hàng hiện tại.
+     */
+    @GetMapping("/inventory")
+    public ApiResponse<Object> getInventory(Authentication authentication) {
+        // TODO: inventoryService.getByStore(getCurrentUserId())
+        return ApiResponse.builder()
+                .code(200)
+                .message("Danh sách kho hàng")
+                .data(null)
                 .build();
     }
 }

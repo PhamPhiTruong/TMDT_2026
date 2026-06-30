@@ -38,6 +38,11 @@ public enum ErrorCode {
 
     // Banner
     BANNER_NOT_FOUND(4001, "Banner not found", HttpStatus.NOT_FOUND),
+
+    // Address
+    ADDRESS_NOT_FOUND(5001, "Địa chỉ không tồn tại hoặc không thuộc về bạn", HttpStatus.NOT_FOUND),
+    ADDRESS_LIMIT_EXCEEDED(5002, "Bạn đã đạt giới hạn tối đa 5 địa chỉ", HttpStatus.BAD_REQUEST),
+    ADDRESS_CANNOT_DELETE_ONLY_DEFAULT(5003, "Không thể xóa địa chỉ mặc định duy nhất, vui lòng thêm địa chỉ khác trước", HttpStatus.BAD_REQUEST)
     INVALID_BANNER(4002, "Invalid banner", HttpStatus.BAD_REQUEST),
 
     // Coupon
