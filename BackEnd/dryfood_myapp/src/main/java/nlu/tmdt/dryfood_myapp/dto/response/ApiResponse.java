@@ -1,18 +1,5 @@
 package nlu.tmdt.dryfood_myapp.dto.response;
 
-<<<<<<< HEAD
-import lombok.*;
-
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class ApiResponse<T> {
-    private int code;
-    private String message;
-    private T result;
-=======
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
@@ -24,7 +11,7 @@ import lombok.*;
 public class ApiResponse<T> {
     private int code;
     private String message;
-    private T data;
+    private T data; // Thống nhất dùng 'data' thay cho 'result' để khớp với toàn bộ Controller mới
 
     public static <T> ApiResponse<T> success(String message, T data) {
         return ApiResponse.<T>builder()
@@ -33,5 +20,4 @@ public class ApiResponse<T> {
                 .data(data)
                 .build();
     }
->>>>>>> fb0b72bd5333b0d21ef6246ae332e1038240aa77
 }
