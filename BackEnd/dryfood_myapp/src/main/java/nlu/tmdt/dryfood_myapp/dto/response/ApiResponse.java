@@ -1,7 +1,14 @@
 package nlu.tmdt.dryfood_myapp.dto.response;
 
+import lombok.*;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class ApiResponse<T> {
-    int code;
-    String message;
-    T data;
+    private int code;
+    private String message;
+    private T result;
 }

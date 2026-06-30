@@ -1,13 +1,19 @@
 package nlu.tmdt.dryfood_myapp.exception;
 
-import lombok.*;
-import lombok.experimental.FieldDefaults;
+import lombok.Getter;
 
 @Getter
-@Builder
-@AllArgsConstructor
-@RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AppException extends RuntimeException {
-    ErrorCode errorCode;
+
+    private final ErrorCode errorCode;
+
+    public AppException(ErrorCode errorCode) {
+        super(errorCode.getMessage());
+        this.errorCode = errorCode;
+    }
+
+    public AppException(ErrorCode errorCode, String message) {
+        super(message);
+        this.errorCode = errorCode;
+    }
 }
