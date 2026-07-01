@@ -2,10 +2,7 @@ package nlu.tmdt.dryfood_myapp.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-<<<<<<< Updated upstream
 import lombok.experimental.SuperBuilder;
-=======
->>>>>>> Stashed changes
 import nlu.tmdt.dryfood_myapp.enums.StoreStatus;
 
 @Entity

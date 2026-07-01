@@ -11,12 +11,9 @@ import nlu.tmdt.dryfood_myapp.repository.UserRepository;
 import nlu.tmdt.dryfood_myapp.security.JwtUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-<<<<<<< Updated upstream
-=======
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Random;
->>>>>>> Stashed changes
 
 @Service
 @RequiredArgsConstructor
@@ -25,15 +22,10 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
-<<<<<<< Updated upstream
-
-    /** Đăng ký tài khoản mới */
-=======
-    private final EmailService emailService; // 🌟 Tiêm EmailService vào luồng Auth
+    private final EmailService emailService; // Tiêm EmailService vào luồng Auth phục vụ OTP
 
     /** Đăng ký tài khoản mới + Gửi mã OTP xác thực */
     @Transactional
->>>>>>> Stashed changes
     public void register(RegisterRequest request) {
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new AppException(ErrorCode.USER_EXISTED);
@@ -41,14 +33,10 @@ public class AuthService {
 
         String fullName = request.getHo().trim() + " " + request.getTen().trim();
 
-<<<<<<< Updated upstream
-=======
-        // 🌟 1. Tạo mã OTP ngẫu nhiên gồm 6 chữ số
+        // 1. Tạo mã OTP ngẫu nhiên gồm 6 chữ số
         String otpCode = String.format("%06d", new Random().nextInt(1000000));
 
-        // 🌟 2. Lưu User tạm thời với trạng thái PENDING_VERIFY và đính kèm mã OTP vào Entity
-        // (Lưu ý: Bạn cần thêm 2 trường 'otpCode' và 'status' vào class Entity User của bạn nếu chưa có nhé)
->>>>>>> Stashed changes
+        // 2. Lưu User tạm thời với trạng thái PENDING_VERIFY và đính kèm mã OTP vào Entity
         User user = User.builder()
                 .username(request.getEmail())
                 .email(request.getEmail())
@@ -56,23 +44,17 @@ public class AuthService {
                 .fullName(fullName)
                 .phone(request.getSoDienThoai())
                 .role("USER")
-<<<<<<< Updated upstream
-                .status("active")
-                .build();
-
-        userRepository.save(user);
-=======
                 .status("PENDING_VERIFY") // Chờ xác thực OTP
                 .otpCode(otpCode)         // Lưu OTP tạm xuống DB để đối chiếu sau này
                 .build();
 
         userRepository.save(user);
 
-        // 🌟 3. Gọi EmailService bắn OTP sang mail của khách hàng (Chạy ngầm bất đồng bộ)
+        // 3. Gọi EmailService bắn OTP sang mail của khách hàng
         emailService.sendOtpEmail(user.getEmail(), otpCode);
     }
 
-    /** 🌟 CHỨC NĂNG MỚI: Xác thực mã OTP để kích hoạt tài khoản */
+    /** Chức năng xác thực mã OTP để kích hoạt tài khoản */
     @Transactional
     public boolean verifyOtp(String email, String inputOtp) {
         User user = userRepository.findByEmail(email)
@@ -87,7 +69,6 @@ public class AuthService {
         }
 
         throw new RuntimeException("Mã OTP không chính xác, vui lòng kiểm tra lại!");
->>>>>>> Stashed changes
     }
 
     /** Đăng nhập email/mật khẩu, trả về JWT */
@@ -95,14 +76,11 @@ public class AuthService {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new AppException(ErrorCode.UNAUTHORIZED));
 
-<<<<<<< Updated upstream
-=======
-        // 🌟 Chặn không cho đăng nhập nếu tài khoản chưa được xác thực OTP
+        // Chặn không cho đăng nhập nếu tài khoản chưa được xác thực OTP
         if ("PENDING_VERIFY".equalsIgnoreCase(user.getStatus())) {
             throw new RuntimeException("Tài khoản chưa được kích hoạt! Vui lòng xác thực mã OTP gửi qua email.");
         }
 
->>>>>>> Stashed changes
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new AppException(ErrorCode.UNAUTHORIZED);
         }
@@ -117,8 +95,4 @@ public class AuthService {
                 .isNewUser(false)
                 .build();
     }
-<<<<<<< Updated upstream
 }
-=======
-}
->>>>>>> Stashed changes

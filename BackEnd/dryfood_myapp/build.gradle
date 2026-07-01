@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.3.4' // 🌟 Tui đã hạ từ 4.0.6 xuống 3.3.4 để chạy được với Java 17 của bạn
+    id 'org.springframework.boot' version '3.3.4' // 🌟 Hạ từ 4.0.6 xuống 3.3.4 để chạy được với Java 17
     id 'io.spring.dependency-management' version '1.1.7'
 }
 
@@ -30,12 +30,11 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
-<<<<<<< Updated upstream
-=======
-    implementation 'org.springframework.boot:spring-boot-starter-mail'
->>>>>>> Stashed changes
 
-    // JWT - THÊM MỚI
+    // Thư viện gửi Mail để chạy luồng OTP của bạn
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+    // JWT - Quản lý bảo mật đăng nhập của nhóm
     implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
     runtimeOnly   'io.jsonwebtoken:jjwt-impl:0.12.6'
     runtimeOnly   'io.jsonwebtoken:jjwt-jackson:0.12.6'

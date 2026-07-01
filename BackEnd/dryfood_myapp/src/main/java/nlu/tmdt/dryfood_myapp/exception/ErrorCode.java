@@ -33,11 +33,7 @@ public enum ErrorCode {
     PRODUCT_ALREADY_ON_STORE(3002, "Product already on store", HttpStatus.CONFLICT),
     PRODUCT_NOT_IN_STORE(3003, "Product does not belong to this store", HttpStatus.BAD_REQUEST),
     STORE_PRODUCT_NOT_FOUND(3004, "Store product not found", HttpStatus.NOT_FOUND),
-<<<<<<< Updated upstream
-    INVALID_PRODUCT(3005, "Invalid product", HttpStatus.BAD_REQUEST),
-=======
-    INVALID_PRODUCT(3002, "Invalid product", HttpStatus.BAD_REQUEST),
->>>>>>> Stashed changes
+    INVALID_PRODUCT(3005, "Invalid product", HttpStatus.BAD_REQUEST), // Giữ mã 3005 để tránh trùng lặp
 
     // Banner (4xxx)
     BANNER_NOT_FOUND(4001, "Banner not found", HttpStatus.NOT_FOUND),

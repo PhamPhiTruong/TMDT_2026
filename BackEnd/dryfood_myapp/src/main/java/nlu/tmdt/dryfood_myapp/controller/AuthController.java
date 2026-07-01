@@ -29,10 +29,7 @@ public class AuthController {
         return ResponseEntity.ok(
                 ApiResponse.<Void>builder()
                         .code(200)
-<<<<<<< Updated upstream
-                        .message("Đăng ký tài khoản thành công")
-=======
-                        // 🌟 CẬP NHẬT: Đổi thông báo để nhắc khách kiểm tra email nhập OTP
+                        // 🌟 CẬP NHẬT LUỒNG OTP CỦA BẠN
                         .message("Đăng ký tạm thời thành công! Vui lòng kiểm tra email để lấy mã OTP kích hoạt tài khoản.")
                         .build()
         );
@@ -53,7 +50,6 @@ public class AuthController {
                 ApiResponse.<Void>builder()
                         .code(200)
                         .message("Kích hoạt tài khoản thành công! Bây giờ bạn đã có thể đăng nhập.")
->>>>>>> Stashed changes
                         .build()
         );
     }
@@ -69,8 +65,4 @@ public class AuthController {
         LoginResponse data = authService.login(request);
         return ResponseEntity.ok(ApiResponse.success("Đăng nhập thành công", data));
     }
-<<<<<<< Updated upstream
 }
-=======
-}
->>>>>>> Stashed changes

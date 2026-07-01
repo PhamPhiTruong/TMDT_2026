@@ -50,15 +50,12 @@ public class JwtUtil {
         return parseClaims(token).getSubject();
     }
 
-<<<<<<< Updated upstream
-    /** Lấy role từ JWT claim (trả về chuỗi, ví dụ: "USER" hoặc "STORE_OWNER"). */
+    /** 🌟 GIỮ LẠI: Lấy role từ JWT claim (trả về chuỗi, ví dụ: "USER" hoặc "STORE_OWNER"). */
     public String extractRole(String token) {
         Object role = parseClaims(token).get("role");
         return role != null ? role.toString() : "USER";
     }
 
-=======
->>>>>>> Stashed changes
     public boolean validateToken(String token) {
         try {
             parseClaims(token);
