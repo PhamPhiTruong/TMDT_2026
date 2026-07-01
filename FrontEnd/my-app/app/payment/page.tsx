@@ -41,7 +41,7 @@ export default function PaymentPage() {
     if (paymentMethod === 2) methodString = "COD";
 
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('accessToken');
       
       // 🚨 ĐOẠN CHECK BẢO HIỂM: Kiểm tra cấu trúc token JWT (phải có đủ 3 phần phân tách bằng dấu chấm)
       if (!token || token === "undefined" || token.split('.').length !== 3) {
@@ -51,7 +51,7 @@ export default function PaymentPage() {
       }
       
       // Gọi lên API xử lý yêu cầu thanh toán
-      const response = await fetch(`http://localhost:8081/api/v1/orders/${orderId}/payment-request`, {
+      const response = await fetch(`http://localhost:8080/api/v1/orders/${orderId}/payment-request`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -99,7 +99,7 @@ export default function PaymentPage() {
     setMessage('');
 
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('accessToken');
       
       if (!token || token === "undefined") {
         setMessage("❌ Thất bại: Không tìm thấy Token xác thực. Vui lòng đăng nhập lại!");
@@ -108,7 +108,7 @@ export default function PaymentPage() {
       }
 
       // Gọi API đối soát OTP thanh toán
-      const response = await fetch(`http://localhost:8081/api/v1/orders/${orderId}/payment-verify?otpCode=${otpCode}`, {
+      const response = await fetch(`http://localhost:8080/api/v1/orders/${orderId}/payment-verify?otpCode=${otpCode}`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -119,7 +119,7 @@ export default function PaymentPage() {
 
       if (response.ok) {
         alert("🎉 Thanh toán thành công!");
-        router.push(`/order-success?orderId=${orderId}`); 
+        router.push(`/`); 
       } else {
         setMessage(`❌ ${data.message || 'Mã OTP không đúng!'}`);
       }

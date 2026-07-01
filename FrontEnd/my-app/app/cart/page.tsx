@@ -1,12 +1,13 @@
 'use client';
 
-import { useState } from 'react';
-import Link from 'next/link';
 import { useCart } from '../context/CartContext';
+import { useEffect, useState } from 'react';
+import { searchProducts, PublicProductResponse } from '@/lib/publicProductService';
 
 // 🌟 Import Header và Footer từ thư mục components
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import Link from 'next/link';
 
 export default function CartPage() {
   const { 
@@ -34,25 +35,17 @@ export default function CartPage() {
     { code: 'FREESHIP', desc: 'Miễn phí vận chuyển' },
   ];
 
-  // Khung bơm dữ liệu thử nghiệm (Giữ lại để bạn test bấm nút chèn vào DB)
-  const suggestedProducts = [
-    { 
-      product_id: 1, 
-      option_id: 1, 
-      name: 'iPhone 15 128GB (Đen)', 
-      price: 18990000, 
-      image: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=500',
-      checked: true
-    },
-    { 
-      product_id: 3, 
-      option_id: 3, 
-      name: 'Áo Thun Nam Basic (Size M)', 
-      price: 250000, 
-      image: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=500',
-      checked: true
-    },
-  ];
+  const [suggestedProducts, setSuggestedProducts] = useState<PublicProductResponse[]>([]);
+
+  useEffect(() => {
+    async function loadSuggestedProducts() {
+      const data = await searchProducts('');
+      if (data && data.length > 0) {
+        setSuggestedProducts(data.slice(0, 4)); // Lấy 4 sản phẩm đầu tiên
+      }
+    }
+    loadSuggestedProducts();
+  }, []);
 
   // 🔄 CẬP NHẬT SỐ LƯỢNG - TỰ ĐỘNG XÓA NẾU SỐ LƯỢNG VỀ 0
   const handleUpdateQuantity = async (item: any, currentQty: number, delta: number) => {
@@ -121,8 +114,8 @@ export default function CartPage() {
   };
 
   // 🚀 BẤM NÚT ĐỂ TỰ ĐỘNG INSERT VÀO DB THẬT
-  const handleAddToCart = async (product: any) => {
-    await addToCartBE(product.product_id, product.option_id, 1); 
+  const handleAddToCart = async (product: PublicProductResponse) => {
+    await addToCartBE(product.productId, null, 1); 
   };
 const handleApplyDiscount = async (codeInput?: string) => {
   const code = (codeInput || discountCode).trim();
@@ -203,11 +196,11 @@ const handleApplyDiscount = async (codeInput?: string) => {
                           className="w-5 h-5 accent-[#1a5f3a]" 
                         />
                         
-                        <img src={item.productImage || item.image || 'https://via.placeholder.com/150'} alt={item.productName} className="w-20 h-20 object-cover rounded-xl border" />
+                        <img src={item.image || 'https://via.placeholder.com/150'} alt={item.name} className="w-20 h-20 object-cover rounded-xl border" />
                         
                         <div>
-                          <h3 className="font-semibold text-gray-800">{item.productName || "Sản phẩm ẩn danh"}</h3>
-                          <p className="text-xs text-gray-400 mt-1">Mã giỏ hàng: {item.cartItemId}</p>
+                          <h3 className="font-semibold text-gray-800">{item.name || "Sản phẩm ẩn danh"}</h3>
+                          <p className="text-xs text-gray-400 mt-1">Mã giỏ hàng: {item.cartItemId || item.id}</p>
                           
                           <button 
                             onClick={() => handleRemoveItem(item)} 
@@ -239,23 +232,23 @@ const handleApplyDiscount = async (codeInput?: string) => {
               {/* ========== KHUNG MỒI SẢN PHẨM NHANH ========== */}
               <div className="mt-8 bg-white rounded-2xl shadow-sm p-6">
                 <h3 className="font-semibold text-xl text-[#1a5f3a] mb-5">Các sản phẩm khác</h3>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {suggestedProducts.map((product, index) => (
-                    <div key={`${product.product_id}-${index}`} className="border border-gray-200 rounded-2xl p-3 hover:border-[#1a5f3a] transition-all group">
+                    <div key={`${product.productId}-${index}`} className="border border-gray-200 rounded-2xl p-3 hover:border-[#1a5f3a] transition-all group flex flex-col">
                       <img 
-                        src={product.image} 
+                        src={product.images && product.images.length > 0 ? product.images[0] : 'https://via.placeholder.com/150'} 
                         alt={product.name}
                         className="w-full h-32 object-cover rounded-xl mb-3 group-hover:scale-105 transition-transform"
                       />
-                      <h4 className="font-medium text-sm text-gray-800">{product.name}</h4>
-                      <p className="text-xs text-gray-400">ID Sản phẩm: {product.product_id} | Option: {product.option_id}</p>
-                      <p className="text-[#1a5f3a] font-bold mt-1">{product.price.toLocaleString()}đ</p>
+                      <h4 className="font-medium text-sm text-gray-800 line-clamp-2">{product.name}</h4>
+                      <p className="text-xs text-gray-400 mt-1">ID Sản phẩm: {product.productId}</p>
+                      <p className="text-[#1a5f3a] font-bold mt-1 flex-1">{product.price.toLocaleString()}đ</p>
                       
                       <button 
                         onClick={() => handleAddToCart(product)}
                         className="mt-3 w-full text-xs py-2 bg-[#1a5f3a] text-white rounded-xl hover:bg-[#13482a] transition"
                       >
-                        Thêm vào giỏ (Gửi BE thật)
+                        Thêm vào giỏ
                       </button>
                     </div>
                   ))}

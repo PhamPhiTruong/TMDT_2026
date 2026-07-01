@@ -47,6 +47,9 @@ public class User extends BaseEntity {
 
     @Column(name = "status", length = 50)
     private String status;
+    @Column(name = "auth_provider", length = 50)
+    private String authProvider;
+
     // Để lưu "active" hoặc "PENDING_VERIFY"
     private String otpCode;
 }

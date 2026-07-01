@@ -20,6 +20,7 @@ public enum ErrorCode {
     BAD_REQUEST(1007, "Bad request", HttpStatus.BAD_REQUEST),
     INTERNAL_SERVER_ERROR(1008, "Internal server error", HttpStatus.INTERNAL_SERVER_ERROR),
     VALIDATION_ERROR(1009, "Validation failed", HttpStatus.BAD_REQUEST),
+    INVALID_PASSWORD(1010, "Mật khẩu không chính xác", HttpStatus.BAD_REQUEST),
 
     // Store (2xxx)
     STORE_ALREADY_EXISTS(2001, "Store already exists for this user", HttpStatus.CONFLICT),
@@ -37,6 +38,7 @@ public enum ErrorCode {
 
     // Banner (4xxx)
     BANNER_NOT_FOUND(4001, "Banner not found", HttpStatus.NOT_FOUND),
+
     INVALID_BANNER(4002, "Invalid banner", HttpStatus.BAD_REQUEST),
 
     // Address (5xxx)

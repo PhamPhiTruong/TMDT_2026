@@ -1,7 +1,7 @@
 package nlu.tmdt.dryfood_myapp.repository;
 
 import nlu.tmdt.dryfood_myapp.entity.Coupon;
-import nlu.tmdt.dryfood_myapp.enums.CouponStatus;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

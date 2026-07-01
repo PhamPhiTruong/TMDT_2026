@@ -69,12 +69,17 @@ public class GoogleAuthService {
                     .userAvatar(picture)
                     .role("USER")
                     .status("active")
+                    .authProvider("GOOGLE")
                     .build();
             userRepository.save(user);
             isNewUser = true;
         } else {
-            // Email đã tồn tại → đăng nhập bình thường
+            // Email đã tồn tại → đăng nhập bình thường, gán lại provider là GOOGLE
             user = userOptional.get();
+            if (!"GOOGLE".equals(user.getAuthProvider())) {
+                user.setAuthProvider("GOOGLE");
+                userRepository.save(user);
+            }
         }
 
         // 4. Tạo JWT thật (bỏ MOCK hoàn toàn)

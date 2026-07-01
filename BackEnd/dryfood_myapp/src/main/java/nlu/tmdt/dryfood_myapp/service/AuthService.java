@@ -42,6 +42,7 @@ public class AuthService {
                 .phone(request.getSoDienThoai())
                 .role("USER")
                 .status("active") // 🌟 Đã chuyển thành active mặc định
+                .authProvider("LOCAL")
                 .otpCode(null)
                 .build();
 

@@ -66,7 +66,7 @@ public class OrderController {
             // --- GIỮ NGUYÊN LUỒNG CŨ CHO COD VÀ BANK_TRANSFER (YÊU CẦU OTP) ---
             String otpCode = String.format("%06d", new java.util.Random().nextInt(1000000));
             orderService.saveOtpToOrder(orderId, otpCode, paymentRequest.getPaymentMethod());
-            String customerEmail = "22130142@st.hcmuaf.edu.vn";
+            String customerEmail = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName();
             emailService.sendOtpEmail(customerEmail, otpCode);
 
             return ResponseEntity.ok(Map.of(

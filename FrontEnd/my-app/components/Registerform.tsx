@@ -26,7 +26,7 @@ interface FormErrors {
 }
 
 const inputClass = (error?: string) =>
-  `w-full border rounded-lg px-4 py-3 text-sm outline-none transition-all placeholder:text-gray-400 ${
+  `w-full border rounded-lg px-4 py-3 text-sm text-gray-900 font-medium outline-none transition-all placeholder:text-gray-500 bg-white ${
     error
       ? 'border-danger bg-red-50 focus:border-danger focus:ring-2 focus:ring-red-100'
       : 'border-gray-300 focus:border-primary focus:ring-2 focus:ring-green-100'
@@ -211,7 +211,7 @@ export default function RegisterForm() {
               <label className="block text-sm font-semibold text-gray-700 mb-1.5">
                 Số điện thoại <span className="text-danger">*</span>
               </label>
-              <input type="tel" value={form.soDienThoai} onChange={setField('soDienThoai')} placeholder="0912 345 678" className={inputClass(errors.soDienThoai)} />
+              <input type="tel" value={form.soDienThoai} onChange={setField('soDienThoai')} className={inputClass(errors.soDienThoai)} />
               {errors.soDienThoai && <p className="mt-1 text-xs text-danger flex items-center gap-1"><AlertCircle className="w-3 h-3" /> {errors.soDienThoai}</p>}
             </div>
 

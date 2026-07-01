@@ -123,10 +123,10 @@ export default function OrderPage() {
     setIsLoading(true);
 
     try {
-      const token = localStorage.getItem('token'); 
+      const token = localStorage.getItem('accessToken'); 
       const fullAddress = `${formData.address}, ${formData.ward}, ${formData.district}, ${formData.province}`;
 
-      const response = await fetch('http://localhost:8081/api/v1/orders/place', {
+      const response = await fetch('http://localhost:8080/api/v1/orders/place', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

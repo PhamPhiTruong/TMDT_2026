@@ -33,5 +33,6 @@ public class AddressRequestDTO {
     @Size(max = 255, message = "Địa chỉ cụ thể tối đa 255 ký tự")
     private String detailAddress;
 
+    @Builder.Default
     private Boolean isDefault = false;
 }

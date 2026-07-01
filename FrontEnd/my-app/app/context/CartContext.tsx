@@ -43,8 +43,8 @@ type CartContextType = {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-const API_BASE_URL = 'http://localhost:8081/api/v1/cart';
-const VOUCHER_API_URL = 'http://localhost:8081/api/v1/vouchers/validate'; // 🌟 Thêm đường dẫn API Voucher
+const API_BASE_URL = 'http://localhost:8080/api/cart';
+const VOUCHER_API_URL = 'http://localhost:8080/api/v1/vouchers/validate'; // 🌟 Thêm đường dẫn API Voucher
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
@@ -55,7 +55,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const fetchCart = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE_URL}/details`);
+      const token = localStorage.getItem('accessToken');
+      const res = await fetch(`${API_BASE_URL}/details`, {
+        headers: {
+          ...(token && { 'Authorization': `Bearer ${token}` })
+        }
+      });
+      if (!res.ok) return; // Không đọc JSON nếu lỗi (chẳng hạn 403 khi chưa đăng nhập)
       const resData = await res.json();
 
       if (res.ok && resData.data) {
@@ -67,7 +73,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
           price: item.price,
           quantity: item.quantity,
           checked: true, // Mặc định khi tải lại giỏ hàng thì tích chọn hết
-          image: 'https://images.unsplash.com/photo-1601493700631-2b16ec4b4716', // Placeholder image
+          image: item.productImage || 'https://images.unsplash.com/photo-1601493700631-2b16ec4b4716', // Placeholder image
         }));
         setCartItems(mappedItems);
       }
@@ -86,19 +92,43 @@ export function CartProvider({ children }: { children: ReactNode }) {
   // 2. THÊM SẢN PHẨM VÀO GIỎ (POST /add)
   const addToCart = async (productId: number, productOptionId: number | null, quantity: number) => {
     try {
+      const token = localStorage.getItem('accessToken');
+      if (!token) {
+        alert('Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng!');
+        return;
+      }
+
       const res = await fetch(`${API_BASE_URL}/add`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify({ productId, productOptionId, quantity }),
       });
-      const result = await res.json();
-      if (res.ok) {
-        alert('✅ ' + result.message);
-        await fetchCart(); // Thành công thì làm mới giỏ hàng luôn
-      } else {
-        alert('❌ Lỗi: ' + result.message); // Chặn lỗi tồn kho từ BE
+
+      if (!res.ok) {
+        if (res.status === 401 || res.status === 403) {
+           alert('Phiên đăng nhập hết hạn hoặc bạn không có quyền. Vui lòng đăng nhập lại!');
+           return;
+        }
+        // Thử parse JSON lỗi từ Backend, nếu không có thì báo lỗi chung
+        let errorMessage = 'Lỗi không xác định từ Backend';
+        try {
+          const errorData = await res.json();
+          errorMessage = errorData.message || errorMessage;
+        } catch (e) {
+          console.error("Lỗi parse error data:", e);
+        }
+        alert('❌ Lỗi: ' + errorMessage);
+        return;
       }
+
+      const result = await res.json();
+      alert('✅ ' + (result.message || 'Thêm vào giỏ thành công'));
+      await fetchCart(); // Thành công thì làm mới giỏ hàng luôn
     } catch (error) {
+      console.error('Add to cart error:', error);
       alert('Không thể kết nối đến Backend!');
     }
   };
@@ -110,8 +140,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
       return;
     }
     try {
+      const token = localStorage.getItem('accessToken');
       const res = await fetch(`${API_BASE_URL}/update/${cartItemId}?quantity=${quantity}`, {
         method: 'PUT',
+        headers: {
+          ...(token && { 'Authorization': `Bearer ${token}` })
+        }
       });
       if (res.ok) {
         await fetchCart(); // Cập nhật lại giỏ hàng và tổng tiền chuẩn từ BE
@@ -126,8 +160,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
   // 4. XÓA SẢN PHẨM KHỎI GIỎ (DELETE /delete/{cartItemId})
   const deleteItem = async (cartItemId: number) => {
     try {
+      const token = localStorage.getItem('accessToken');
       const res = await fetch(`${API_BASE_URL}/delete/${cartItemId}`, {
         method: 'DELETE',
+        headers: {
+          ...(token && { 'Authorization': `Bearer ${token}` })
+        }
       });
       if (res.ok) {
         await fetchCart();
@@ -140,8 +178,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
   // 5. XÓA SẠCH GIỎ HÀNG (DELETE /clear)
   const clearCart = async () => {
     try {
+      const token = localStorage.getItem('accessToken');
       const res = await fetch(`${API_BASE_URL}/clear`, {
         method: 'DELETE',
+        headers: {
+          ...(token && { 'Authorization': `Bearer ${token}` })
+        }
       });
       if (res.ok) {
         await fetchCart();
@@ -163,7 +205,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const applyDiscount = async (code: string): Promise<ApplyDiscountResponse> => {
     setLoading(true);
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('accessToken');
       
       const res = await fetch(VOUCHER_API_URL, {
         method: 'POST',

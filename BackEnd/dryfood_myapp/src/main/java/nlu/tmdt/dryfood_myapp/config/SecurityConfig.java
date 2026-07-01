@@ -18,8 +18,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import lombok.RequiredArgsConstructor;
+import nlu.tmdt.dryfood_myapp.repository.UserRepository;
 import nlu.tmdt.dryfood_myapp.security.JwtAuthenticationFilter;
 
 @Configuration
@@ -54,6 +57,7 @@ public class SecurityConfig {
 
                         // ── Guest: xem sản phẩm & Q&A ──────────────────────────────
                         .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/public/products/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/questions/**").permitAll()
 
                         // 🌟 LUỒNG THANH TOÁN (MOMO & OTP): Cho phép USER thực hiện ──
@@ -74,6 +78,9 @@ public class SecurityConfig {
 
                         // ── Đặt câu hỏi: USER ───────────────────────────────────────
                         .requestMatchers(HttpMethod.POST, "/api/questions").hasRole("USER")
+
+                        // ── Admin: Quản lý ──────────────────────────────────────────
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
 
                         // ── Store Dashboard & quản lý shop: chỉ STORE_OWNER ─────────
                         .requestMatchers("/api/store/**").hasRole("STORE_OWNER")
@@ -105,5 +112,15 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+    @Bean
+    public UserDetailsService userDetailsService(UserRepository userRepository) {
+        return username -> userRepository.findByEmail(username)
+                .map(user -> org.springframework.security.core.userdetails.User
+                        .withUsername(user.getEmail())
+                        .password(user.getPassword())
+                        .roles(user.getRole() != null ? user.getRole() : "USER")
+                        .build())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
     }
 }

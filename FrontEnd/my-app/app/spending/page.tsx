@@ -20,7 +20,7 @@ export default function SpendingPage() {
   useEffect(() => {
     const fetchSpendingData = async () => {
       try {
-        const response = await fetch('http://localhost:8081/api/v1/orders/spending-analytics');
+        const response = await fetch('http://localhost:8080/api/v1/orders/spending-analytics');
         if (response.ok) {
           const resData = await response.json();
           

@@ -168,10 +168,16 @@ public class CartServiceImpl implements CartService {
             BigDecimal price = i.getPrice() != null ? i.getPrice() : BigDecimal.ZERO;
             BigDecimal total = price.multiply(BigDecimal.valueOf(i.getQuantity()));
 
+            String imageUrl = null;
+            if (i.getProduct().getImages() != null && !i.getProduct().getImages().isEmpty()) {
+                imageUrl = i.getProduct().getImages().get(0).getUrl();
+            }
+
             CartItemResponse dto = CartItemResponse.builder()
                     .cartItemId(i.getCartItemId())
                     .productId(i.getProduct().getProductId())
                     .productName(i.getProduct().getName())
+                    .productImage(imageUrl)
                     .quantity(i.getQuantity())
                     .price(price)
                     .total(total)
