@@ -22,9 +22,9 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
-    private final EmailService emailService; // Tiêm EmailService vào luồng Auth phục vụ OTP
+    private final EmailService emailService; // Tiêm vào để sau này dùng OTP cho thanh toán
 
-    /** Đăng ký tài khoản mới + Gửi mã OTP xác thực */
+    /** Đăng ký tài khoản mới - Vào thẳng trạng thái active */
     @Transactional
     public void register(RegisterRequest request) {
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
@@ -33,10 +33,7 @@ public class AuthService {
 
         String fullName = request.getHo().trim() + " " + request.getTen().trim();
 
-        // 1. Tạo mã OTP ngẫu nhiên gồm 6 chữ số
-        String otpCode = String.format("%06d", new Random().nextInt(1000000));
-
-        // 2. Lưu User tạm thời với trạng thái PENDING_VERIFY và đính kèm mã OTP vào Entity
+        // Tạo thẳng User với trạng thái active để vào thẳng hệ thống, không cần xác thực email lúc này
         User user = User.builder()
                 .username(request.getEmail())
                 .email(request.getEmail())
@@ -44,17 +41,14 @@ public class AuthService {
                 .fullName(fullName)
                 .phone(request.getSoDienThoai())
                 .role("USER")
-                .status("PENDING_VERIFY") // Chờ xác thực OTP
-                .otpCode(otpCode)         // Lưu OTP tạm xuống DB để đối chiếu sau này
+                .status("active") // 🌟 Đã chuyển thành active mặc định
+                .otpCode(null)
                 .build();
 
         userRepository.save(user);
-
-        // 3. Gọi EmailService bắn OTP sang mail của khách hàng
-        emailService.sendOtpEmail(user.getEmail(), otpCode);
     }
 
-    /** Chức năng xác thực mã OTP để kích hoạt tài khoản */
+    /** Chức năng xác thực mã OTP (Có thể giữ lại để tái sử dụng khi thanh toán hoặc reset pass) */
     @Transactional
     public boolean verifyOtp(String email, String inputOtp) {
         User user = userRepository.findByEmail(email)
@@ -76,10 +70,7 @@ public class AuthService {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new AppException(ErrorCode.UNAUTHORIZED));
 
-        // Chặn không cho đăng nhập nếu tài khoản chưa được xác thực OTP
-        if ("PENDING_VERIFY".equalsIgnoreCase(user.getStatus())) {
-            throw new RuntimeException("Tài khoản chưa được kích hoạt! Vui lòng xác thực mã OTP gửi qua email.");
-        }
+        // 🌟 Đã loại bỏ đoạn check PENDING_VERIFY để tài khoản không bị chặn ở đây nữa
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new AppException(ErrorCode.UNAUTHORIZED);

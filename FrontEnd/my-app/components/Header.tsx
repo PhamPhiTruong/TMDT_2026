@@ -2,23 +2,15 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-// 🌟 Đã import useRouter theo yêu cầu của bạn
 import { useRouter } from 'next/navigation';
 import { useCart } from '../app/context/CartContext';
-<<<<<<< Updated upstream
 import { useAuth } from '../app/context/AuthContext';
-import { ShoppingCart, User, MessageSquare, ClipboardList, Search, Menu, X, Phone } from 'lucide-react';
-
-export default function Header() {
-  const { cartItems } = useCart();
-  const { isLoggedIn } = useAuth();
-=======
 import { ShoppingCart, User, MessageSquare, ClipboardList, BarChart3, Search, Menu, X, Phone } from 'lucide-react';
 
 export default function Header() {
   const { cartItems } = useCart();
-  const router = useRouter(); // Khởi tạo router để điều hướng bằng lập trình nếu cần
->>>>>>> Stashed changes
+  const { isLoggedIn } = useAuth(); // Giữ lại trạng thái đăng nhập từ nhóm
+  const router = useRouter(); 
   const [mounted, setMounted] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -101,7 +93,7 @@ export default function Header() {
             <span className="text-[10px] font-bold mt-1 hidden sm:inline-block">Chi tiêu</span>
           </Link>
 
-          {/* 📋 NÚT ĐƠN HÀNG (Giao diện Máy tính) - ĐÃ GẮN ĐƯỜNG DẪN /order */}
+          {/* 📋 NÚT ĐƠN HÀNG (Giao diện Máy tính) */}
           <Link
             href="/order"
             className="flex flex-col items-center text-gray-600 hover:text-primary transition-all group"
@@ -119,7 +111,7 @@ export default function Header() {
             <span className="text-[10px] font-bold mt-1 hidden sm:inline-block">Tin nhắn</span>
           </Link>
 
-          {/* User Account */}
+          {/* User Account (Kết hợp điều hướng logic của nhóm) */}
           <Link
             href={isLoggedIn ? '/tai-khoan/dia-chi' : '/dang-nhap'}
             className="flex flex-col items-center text-gray-600 hover:text-primary transition-all group"
@@ -213,10 +205,10 @@ export default function Header() {
               onClick={() => setMobileMenuOpen(false)}
               className="hover:text-primary py-1 border-b border-gray-50 flex items-center gap-2 text-primary font-bold"
             >
-              <BarChart3 className="w-4 h-4" /> 📊 Thống kê chi tiêu
+              <BarChart3 className="w-4 h-4" /> Thống kê chi tiêu
             </Link>
 
-            {/* 📋 NÚT ĐƠN HÀNG (Giao diện Điện thoại) - ĐÃ GẮN ĐƯỜNG DẪN /order */}
+            {/* 📋 NÚT ĐƠN HÀNG (Giao diện Điện thoại) */}
             <Link
               href="/order"
               onClick={() => setMobileMenuOpen(false)}
