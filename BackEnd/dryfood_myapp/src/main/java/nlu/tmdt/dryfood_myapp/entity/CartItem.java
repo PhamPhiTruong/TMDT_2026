@@ -1,8 +1,9 @@
 package nlu.tmdt.dryfood_myapp.entity;
 
-import java.math.BigDecimal;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "cart_items")
@@ -26,9 +27,8 @@ public class CartItem {
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_option_id")
-    private ProductOption productOption;
+    @Column(name = "product_option_id")
+    private Integer productOptionId;     // ← Phải có trường này
 
     @Column(name = "quantity", nullable = false)
     private Integer quantity;

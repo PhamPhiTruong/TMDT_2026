@@ -29,7 +29,27 @@ public class AuthController {
         return ResponseEntity.ok(
                 ApiResponse.<Void>builder()
                         .code(200)
-                        .message("Đăng ký tài khoản thành công")
+                        // 🌟 CẬP NHẬT LUỒNG OTP CỦA BẠN
+                        .message("Đăng ký tạm thời thành công! Vui lòng kiểm tra email để lấy mã OTP kích hoạt tài khoản.")
+                        .build()
+        );
+    }
+
+    /**
+     * POST /api/auth/verify-otp
+     * Params: email, otpCode
+     * 🌟 ENDPOINT MỚI: Tiếp nhận yêu cầu kích hoạt tài khoản bằng mã OTP
+     */
+    @PostMapping("/verify-otp")
+    public ResponseEntity<ApiResponse<Void>> verifyOtp(
+            @RequestParam String email,
+            @RequestParam String otpCode) {
+
+        authService.verifyOtp(email, otpCode);
+        return ResponseEntity.ok(
+                ApiResponse.<Void>builder()
+                        .code(200)
+                        .message("Kích hoạt tài khoản thành công! Bây giờ bạn đã có thể đăng nhập.")
                         .build()
         );
     }

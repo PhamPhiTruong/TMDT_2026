@@ -1,6 +1,5 @@
 package nlu.tmdt.dryfood_myapp.entity;
 
-import java.time.LocalDateTime;
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.PrePersist;
@@ -11,6 +10,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDateTime;
+
 @MappedSuperclass
 @Getter
 @Setter
@@ -19,7 +20,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public abstract class BaseEntity {
 
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
@@ -27,7 +28,9 @@ public abstract class BaseEntity {
 
     @PrePersist
     protected void onCreate() {
-        createdAt = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now();
+        createdAt = now;
+        updatedAt = now; // quan trọng: tránh null lúc insert lần đầu
     }
 
     @PreUpdate
