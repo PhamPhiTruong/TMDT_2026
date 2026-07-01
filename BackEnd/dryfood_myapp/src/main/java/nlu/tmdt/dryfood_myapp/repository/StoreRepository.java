@@ -12,4 +12,6 @@ public interface StoreRepository extends JpaRepository<Store, Integer> {
 
     boolean existsByOwnerUserId(Integer userId);
 
+    Optional<Store> findByUrl(String url);
+
 }

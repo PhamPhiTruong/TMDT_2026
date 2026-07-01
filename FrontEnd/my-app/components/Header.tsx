@@ -2,12 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useCart } from '../app/context/CartContext';
 import { useAuth } from '../app/context/AuthContext';
 import { ShoppingCart, User, MessageSquare, ClipboardList, BarChart3, Search, Menu, X, Phone } from 'lucide-react';
-
-import { useSearchParams } from 'next/navigation';
 export default function Header() {
   const router = useRouter();
   const searchParams = useSearchParams();
