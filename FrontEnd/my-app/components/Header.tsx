@@ -6,11 +6,33 @@ import { useCart } from '../app/context/CartContext';
 import { useAuth } from '../app/context/AuthContext';
 import { ShoppingCart, User, MessageSquare, ClipboardList, Search, Menu, X, Phone } from 'lucide-react';
 
+import { useRouter, useSearchParams } from 'next/navigation';
+
 export default function Header() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const { cartItems } = useCart();
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn, user, logout } = useAuth();
   const [mounted, setMounted] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [searchKeyword, setSearchKeyword] = useState('');
+
+  useEffect(() => {
+    if (searchParams) {
+      setSearchKeyword(searchParams.get('q') || '');
+    }
+  }, [searchParams]);
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchKeyword.trim()) {
+      router.push(`/san-pham?q=${encodeURIComponent(searchKeyword.trim())}`);
+      setMobileMenuOpen(false);
+    } else {
+      router.push(`/san-pham`);
+      setMobileMenuOpen(false);
+    }
+  };
 
   // Tránh lỗi hydration mismatch bằng cách chỉ render số lượng giỏ hàng sau khi component mount ở Client
   useEffect(() => {
@@ -64,9 +86,11 @@ export default function Header() {
         </Link>
 
         {/* Search Bar */}
-        <form className="hidden md:flex flex-1 max-w-lg relative" onSubmit={(e) => e.preventDefault()}>
+        <form className="hidden md:flex flex-1 max-w-lg relative" onSubmit={handleSearchSubmit}>
           <input
             type="text"
+            value={searchKeyword}
+            onChange={(e) => setSearchKeyword(e.target.value)}
             placeholder="Tìm kiếm nông sản, trái cây sấy..."
             className="w-full bg-gray-50 border border-gray-200 focus:border-primary rounded-xl py-2.5 pl-4 pr-10 text-sm outline-none transition-all focus:bg-white"
           />
@@ -100,13 +124,47 @@ export default function Header() {
           </Link>
 
           {/* User Account */}
-          <Link
-            href={isLoggedIn ? '/tai-khoan/dia-chi' : '/dang-nhap'}
-            className="flex flex-col items-center text-gray-600 hover:text-primary transition-all group"
-          >
-            <User className="w-5 h-5 group-hover:scale-105 transition-transform" />
-            <span className="text-[10px] font-bold mt-1 hidden sm:inline-block">Tài khoản</span>
-          </Link>
+          {mounted && isLoggedIn && user ? (
+            <div className="relative group/account">
+              <Link
+                href="/tai-khoan/ho-so"
+                className="flex flex-col items-center text-gray-600 hover:text-primary transition-all group"
+              >
+                <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-[10px] overflow-hidden border border-primary/20 group-hover:scale-105 transition-transform">
+                  {user.avatar ? (
+                    <img src={user.avatar} alt={user.fullName} className="w-full h-full object-cover" />
+                  ) : (
+                    user.fullName?.charAt(0).toUpperCase() || 'U'
+                  )}
+                </div>
+                <span className="text-[10px] font-bold mt-1 hidden sm:inline-block truncate max-w-[60px]" title={user.fullName}>
+                  {user.fullName.split(' ').pop()}
+                </span>
+              </Link>
+              {/* Dropdown on hover */}
+              <div className="absolute right-0 top-full pt-1 w-48 opacity-0 invisible group-hover/account:opacity-100 group-hover/account:visible transition-all z-50">
+                <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-2 space-y-1">
+                  <Link href="/tai-khoan/ho-so" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary rounded-lg transition-colors">
+                    Hồ sơ của tôi
+                  </Link>
+                  <Link href="/tai-khoan/don-hang" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary rounded-lg transition-colors">
+                    Đơn mua
+                  </Link>
+                  <button onClick={() => logout()} className="w-full text-left px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                    Đăng xuất
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <Link
+              href="/dang-nhap"
+              className="flex flex-col items-center text-gray-600 hover:text-primary transition-all group"
+            >
+              <User className="w-5 h-5 group-hover:scale-105 transition-transform" />
+              <span className="text-[10px] font-bold mt-1 hidden sm:inline-block">Đăng nhập</span>
+            </Link>
+          )}
 
           {/* Cart */}
           <Link
@@ -176,9 +234,11 @@ export default function Header() {
       {/* Mobile Menu Panel */}
       {mobileMenuOpen && (
         <div className="md:hidden border-t border-gray-100 bg-white p-4 space-y-4 animate-fadeInUp shadow-inner">
-          <form className="relative" onSubmit={(e) => e.preventDefault()}>
+          <form className="relative" onSubmit={handleSearchSubmit}>
             <input
               type="text"
+              value={searchKeyword}
+              onChange={(e) => setSearchKeyword(e.target.value)}
               placeholder="Tìm kiếm..."
               className="w-full bg-gray-50 border border-gray-200 rounded-xl py-2 pl-4 pr-10 text-sm outline-none"
             />

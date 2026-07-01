@@ -36,6 +36,7 @@ public class AuthService {
                 .phone(request.getSoDienThoai())
                 .role("USER")
                 .status("active")
+                .authProvider("LOCAL")
                 .build();
 
         userRepository.save(user);

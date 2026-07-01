@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronRight, ArrowRight, Sparkles, BookOpen } from 'lucide-react';
@@ -21,24 +21,64 @@ import {
   Product,
 } from './data/homepageData';
 
+import { searchProducts } from '@/lib/publicProductService';
+
 export default function Home() {
   const [activeCategory, setActiveCategory] = useState('all');
+  const [realProducts, setRealProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setIsLoading(true);
+        const data = await searchProducts('');
+        // Map PublicProductResponse to Product interface
+        const mappedProducts = data.map((p: any) => {
+          // Lấy hình ảnh đầu tiên làm ảnh đại diện, nếu không có thì lấy ảnh mặc định
+          const image = p.images && p.images.length > 0 ? p.images[0] : '/icons/mitsay.jpg';
+          return {
+            id: p.productId,
+            name: p.name,
+            price: p.price,
+            image: image,
+            unit: p.storeName || 'Sản phẩm', // Tạm dùng unit để hiển thị tên cửa hàng
+            isOutOfStock: p.quantity <= 0
+          };
+        });
+        setRealProducts(mappedProducts);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchProducts();
+  }, []);
 
   // Xử lý bộ lọc sản phẩm dựa trên danh mục được chọn
   const getFilteredProducts = (): Product[] => {
+    // Nếu chưa load xong hoặc lỗi mạng, dùng tạm mảng rỗng
+    if (realProducts.length === 0 && !isLoading) {
+      return []; // Thay vì FEATURED_PRODUCTS
+    }
+    
+    // Chỉ hiển thị 12 sản phẩm ở trang chủ
+    const displayProducts = realProducts.slice(0, 12);
+    
     if (activeCategory === 'all') {
-      return FEATURED_PRODUCTS;
+      return displayProducts;
     }
     if (activeCategory === 'seasonal') {
       // Lọc các sản phẩm có chữ "mùa" hoặc đại diện cho sản phẩm theo mùa
-      return FEATURED_PRODUCTS.filter(
+      return displayProducts.filter(
         (p) =>
-          p.name.includes('XOÀI') ||
-          p.name.includes('THANH LONG') ||
-          p.name.includes('CAM')
+          p.name.toUpperCase().includes('XOÀI') ||
+          p.name.toUpperCase().includes('THANH LONG') ||
+          p.name.toUpperCase().includes('CAM')
       );
     }
-    return FEATURED_PRODUCTS;
+    return displayProducts;
   };
 
   const handleSelectCategory = (id: string) => {
@@ -112,7 +152,7 @@ export default function Home() {
             </span>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {NEW_PRODUCTS.map((product) => (
+            {(realProducts.length > 0 ? realProducts.slice(12, 16) : NEW_PRODUCTS).map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>

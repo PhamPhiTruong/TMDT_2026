@@ -21,6 +21,7 @@ public enum ErrorCode {
     BAD_REQUEST(1007, "Bad request", HttpStatus.BAD_REQUEST),
     INTERNAL_SERVER_ERROR(1008, "Internal server error", HttpStatus.INTERNAL_SERVER_ERROR),
     VALIDATION_ERROR(1009, "Validation failed", HttpStatus.BAD_REQUEST),
+    INVALID_PASSWORD(1010, "Mật khẩu không chính xác", HttpStatus.BAD_REQUEST),
 
     // Store
     STORE_ALREADY_EXISTS(2001, "Store already exists for this user", HttpStatus.CONFLICT),

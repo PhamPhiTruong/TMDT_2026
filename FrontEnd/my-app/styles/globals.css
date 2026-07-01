@@ -78,3 +78,19 @@ body {
 .btn-primary:active {
   transform: translateY(0);
 }
+
+/* Base styles for all form inputs to improve text contrast globally */
+@layer base {
+  input,
+  textarea,
+  select {
+    @apply text-gray-900 font-medium;
+  }
+  
+  /* Ensure backgrounds of inputs are solid */
+  input:not([type="checkbox"]):not([type="radio"]),
+  textarea,
+  select {
+    @apply bg-white border-gray-300;
+  }
+}

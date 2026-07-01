@@ -6,6 +6,8 @@ import { ShoppingCart, Check } from 'lucide-react';
 import { Product } from '../app/data/homepageData';
 import { useCart } from '../app/context/CartContext';
 
+import Link from 'next/link';
+
 interface ProductCardProps {
   product: Product;
 }
@@ -50,7 +52,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   const isContact = product.price === 0;
 
   return (
-    <div className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between h-full relative group">
+    <Link href={`/san-pham/${product.id}`} className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between h-full relative group block">
       {/* Discount Badge */}
       {product.discount && product.discount > 0 && (
         <span className="absolute top-3 left-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-lg z-10">
@@ -130,6 +132,6 @@ export default function ProductCard({ product }: ProductCardProps) {
           )}
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
