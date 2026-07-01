@@ -49,7 +49,35 @@ public class AdminDataInitializer implements CommandLineRunner {
                 log.info("Admin account already exists and is ACTIVE.");
             }
         }
+        // ── 1.5 Tạo STORE_OWNER mặc định ─────────────────────────
+        String ownerEmail = "owner001@store.com";
+        var ownerOpt = userRepository.findByEmail(ownerEmail);
 
+        User storeOwner1;
+
+        if (ownerOpt.isEmpty()) {
+            log.info("Creating default store owner account...");
+
+            storeOwner1 = User.builder()
+                    .username("owner001")
+                    .email(ownerEmail)
+                    .password(passwordEncoder.encode("owner123"))
+                    .fullName("Store Owner 001")
+                    .role("STORE_OWNER")
+                    .status("ACTIVE")
+                    .build();
+
+            storeOwner1 = userRepository.save(storeOwner1);
+            log.info("Default store owner created successfully.");
+        } else {
+            storeOwner1 = ownerOpt.get();
+
+            if (!"ACTIVE".equals(storeOwner1.getStatus())) {
+                storeOwner1.setStatus("ACTIVE");
+                storeOwner1 = userRepository.save(storeOwner1);
+                log.info("Store owner status updated to ACTIVE.");
+            }
+        }
         // ── 2. Seed 25 sản phẩm trái cây sấy nếu bảng products đang trống ───────
         if (productRepository.count() == 0) {
             log.info("No products found — seeding 25 products from snapshot...");
@@ -69,6 +97,7 @@ public class AdminDataInitializer implements CommandLineRunner {
                                     .status("ACTIVE")
                                     .build()
                     ));
+            User storeOwner2 = userRepository.findByEmail(ownerEmail).get();
 
             // -- Cửa hàng 2: Đặc Sản Vùng Miền --
             nlu.tmdt.dryfood_myapp.entity.Store store2 = storeRepository

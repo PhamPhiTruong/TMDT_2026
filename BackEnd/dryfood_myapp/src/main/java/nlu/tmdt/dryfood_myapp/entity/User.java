@@ -52,4 +52,5 @@ public class User extends BaseEntity {
 
     // Để lưu "active" hoặc "PENDING_VERIFY"
     private String otpCode;
+
 }
