@@ -18,18 +18,33 @@ export default function SpendingPage() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchSpendingData = async () => {
+   const fetchSpendingData = async () => {
       try {
-        const response = await fetch('http://localhost:8081/api/v1/orders/spending-analytics');
+        // 🚀 1. LẤY TOKEN ĐÃ LƯU KHI ĐĂNG NHẬP (Thử lấy từ localStorage)
+        const token = localStorage.getItem('token') || localStorage.getItem('accessToken');
+
+        // 🚀 2. GỬI FETCH KÈM THEO HEADER AUTHORIZATION
+        const response = await fetch('http://localhost:8081/api/v1/orders/spending-analytics', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            // Nếu có token thì gửi kèm, không có thì để trống
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+          }
+        });
+        
         if (response.ok) {
           const resData = await response.json();
-          
-          // 🔍 DÒNG IN LOG ĐỂ CHECK LỖI TRÊN TRÌNH DUYỆT (Bấm F12 -> chọn thẻ Console)
           console.log("👉 Dữ liệu thực tế Backend trả về Frontend:", resData);
-          
           setData(resData);
         } else {
-          console.error("❌ API phản hồi lỗi, không lấy được data!");
+          const errorText = await response.text();
+          console.error(`❌ Backend báo lỗi hệ thống! Mã trạng thái (Status Code): ${response.status}`);
+          console.error(`💬 Nội dung lỗi chi tiết từ Backend:`, errorText);
+          
+          if (response.status === 403) {
+            console.warn("💡 Mẹo: Vẫn bị 403! Hãy kiểm tra xem bạn đã đăng nhập tài khoản trên web chưa, hoặc từ khóa lưu token trong localStorage của bạn tên là gì (token, access_token, jwt...).");
+          }
         }
       } catch (error) {
         console.error('❌ Thất bại khi kết nối mạng đến Backend:', error);

@@ -1,4 +1,6 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8080';
+'use client';
+
+const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8081';
 
 // ─── Types ────────────────────────────────────────────────
 export interface LoginResponse {
@@ -52,14 +54,15 @@ export async function registerUser(payload: {
 }
 
 /** Đăng nhập bằng email và mật khẩu */
+/** Đăng nhập bằng email và mật khẩu */
 export async function loginUser(payload: {
   email: string;
-  password: string;
+  password: string; // 🌟 Đổi từ matKhau về lại password cho khớp Backend
 }): Promise<LoginResponse> {
   const res = await fetch(`${API_BASE}/api/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
+    body: JSON.stringify(payload), // Bây giờ payload sẽ là { email, password } đúng chuẩn
   });
   const body: ApiResponse<LoginResponse> = await res.json();
   if (!res.ok) throw new Error(body.message ?? 'Đăng nhập thất bại');

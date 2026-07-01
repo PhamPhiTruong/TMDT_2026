@@ -45,16 +45,41 @@ export default function LoginForm() {
       return;
     }
 
-    setErrors({});
     setIsLoading(true);
+    setErrors({});
 
     try {
-      const data = await loginUser({ email, password });
-      login(data);          // lưu vào AuthContext + localStorage
-      router.push('/');
-    } catch (err: unknown) {
+      // 1. Gọi API đăng nhập từ authService
+      const rawData = await loginUser({ email, password });
+      
+      // Ép kiểu sang 'any' để TypeScript không gạch chân báo lỗi thuộc tính lạ
+      const data = rawData as any;
+      
+      // 2. Trích xuất token linh hoạt dựa trên cấu trúc Response thực tế của Backend
+      const token = data?.token || data?.accessToken || data?.result?.token || data?.result?.accessToken;
+      
+      if (token) {
+        // Chủ động lưu token vào localStorage ngay lập tức
+        localStorage.setItem('token', token);
+      } else {
+        console.warn("Cảnh báo: Không tìm thấy token trong phản hồi từ API đăng nhập!", data);
+      }
+
+      // 3. Cập nhật trạng thái Context toàn cục
+      await login(data);          
+      
+      // 4. Chuyển hướng về trang chủ và làm mới trạng thái
+      router.push('/');     
+      router.refresh(); 
+   } catch (err: unknown) {
       const message =
         err instanceof Error ? err.message : 'Email hoặc mật khẩu không đúng.';
+      
+      if (message.includes("Uncategorized") || message.includes("chưa được kích hoạt")) {
+        router.push(`/xac-thuc-otp?email=${encodeURIComponent(email)}`);
+        return;
+      }
+
       setErrors({ general: message });
     } finally {
       setIsLoading(false);
@@ -63,7 +88,7 @@ export default function LoginForm() {
 
   const handleGoogleLogin = () => {
     setIsGoogleLoading(true);
-    window.location.href = getGoogleOAuthUrl(); // redirect sang Google
+    window.location.href = getGoogleOAuthUrl();
   };
 
   return (

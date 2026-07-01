@@ -9,7 +9,7 @@ import { ShoppingCart, User, MessageSquare, ClipboardList, BarChart3, Search, Me
 
 export default function Header() {
   const { cartItems } = useCart();
-  const { isLoggedIn } = useAuth(); // Giữ lại trạng thái đăng nhập từ nhóm
+  const { isLoggedIn } = useAuth(); // Trạng thái đăng nhập từ AuthContext
   const router = useRouter(); 
   const [mounted, setMounted] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -111,9 +111,9 @@ export default function Header() {
             <span className="text-[10px] font-bold mt-1 hidden sm:inline-block">Tin nhắn</span>
           </Link>
 
-          {/* User Account (Kết hợp điều hướng logic của nhóm) */}
+          {/* User Account - Đã fix lỗi Hydration bằng logic kiểm tra mounted */}
           <Link
-            href={isLoggedIn ? '/tai-khoan/dia-chi' : '/dang-nhap'}
+            href={mounted && isLoggedIn ? '/tai-khoan/dia-chi' : '/dang-nhap'}
             className="flex flex-col items-center text-gray-600 hover:text-primary transition-all group"
           >
             <User className="w-5 h-5 group-hover:scale-105 transition-transform" />

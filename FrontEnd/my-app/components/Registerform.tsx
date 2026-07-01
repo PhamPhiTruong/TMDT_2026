@@ -79,34 +79,44 @@ export default function RegisterForm() {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const validation = validate();
-    if (Object.keys(validation).length > 0) {
-      setErrors(validation);
-      return;
-    }
+  e.preventDefault();
+  const validation = validate();
+  if (Object.keys(validation).length > 0) {
+    setErrors(validation);
+    return;
+  }
 
-    setErrors({});
-    setIsLoading(true);
+  setErrors({});
+  setIsLoading(true);
 
-    try {
-      await registerUser({
-        ho: form.ho.trim(),
-        ten: form.ten.trim(),
-        soDienThoai: form.soDienThoai.trim(),
-        email: form.email.trim(),
-        matKhau: form.matKhau,
-      });
-      setIsSuccess(true);
-    } catch (err: unknown) {
-      const message =
-        err instanceof Error ? err.message : 'Đăng ký thất bại. Vui lòng thử lại.';
-      setErrors({ general: message });
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // 1. Thêm dòng này để chắc chắn hàm có chạy khi click nút
+  console.log("Dữ liệu chuẩn bị gửi đi:", {
+    ho: form.ho.trim(),
+    ten: form.ten.trim(),
+    soDienThoai: form.soDienThoai.trim(),
+    email: form.email.trim(),
+    matKhau: form.matKhau,
+  });
 
+  try {
+    await registerUser({
+      ho: form.ho.trim(),
+      ten: form.ten.trim(),
+      soDienThoai: form.soDienThoai.trim(),
+      email: form.email.trim(),
+      matKhau: form.matKhau,
+    });
+    setIsSuccess(true);
+  } catch (err: unknown) {
+    // 2. Ép in hẳn lỗi thực tế ra Console để bắt bài lỗi mạng/URL
+    console.error("LỖI THỰC TẾ KHI GỌI API ĐĂNG KÝ:", err); 
+    
+    const message = err instanceof Error ? err.message : 'Đăng ký thất bại. Vui lòng thử lại.';
+    setErrors({ general: message });
+  } finally {
+    setIsLoading(false);
+  }
+};
   const handleGoogleLogin = () => {
     setIsGoogleLoading(true);
     window.location.href = getGoogleOAuthUrl();
