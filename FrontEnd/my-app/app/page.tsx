@@ -1,65 +1,260 @@
-import Image from "next/image";
+'use client';
+
+import { useState } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { ChevronRight, ArrowRight, Sparkles, BookOpen } from 'lucide-react';
+
+import Header from '../components/Header';
+import Footer from '../components/Footer';
+import FloatingButtons from '../components/FloatingButtons';
+import CategorySidebar from '../components/CategorySidebar';
+import BannerCarousel from '../components/BannerCarousel';
+import VoucherCard from '../components/VoucherCard';
+import ProductCard from '../components/ProductCard';
+
+import {
+  VOUCHERS,
+  NEW_PRODUCTS,
+  FEATURED_PRODUCTS,
+  NEWS_LIST,
+  Product,
+} from './data/homepageData';
 
 export default function Home() {
+  const [activeCategory, setActiveCategory] = useState('all');
+
+  // Xử lý bộ lọc sản phẩm dựa trên danh mục được chọn
+  const getFilteredProducts = (): Product[] => {
+    if (activeCategory === 'all') {
+      return FEATURED_PRODUCTS;
+    }
+    if (activeCategory === 'seasonal') {
+      // Lọc các sản phẩm có chữ "mùa" hoặc đại diện cho sản phẩm theo mùa
+      return FEATURED_PRODUCTS.filter(
+        (p) =>
+          p.name.includes('XOÀI') ||
+          p.name.includes('THANH LONG') ||
+          p.name.includes('CAM')
+      );
+    }
+    return FEATURED_PRODUCTS;
+  };
+
+  const handleSelectCategory = (id: string) => {
+    if (id === 'news') {
+      // Cuộn mượt đến phần tin tức
+      const newsSection = document.getElementById('tin-tuc-section');
+      if (newsSection) {
+        newsSection.scrollIntoView({ behavior: 'smooth' });
+      }
+      return;
+    }
+    setActiveCategory(id);
+    // Cuộn mượt về khu vực sản phẩm tiêu biểu
+    const productsSection = document.getElementById('san-pham-tieu-bieu');
+    if (productsSection) {
+      productsSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  // Chia tách bài viết nổi bật và các bài viết phụ
+  const featuredNews = NEWS_LIST[0];
+  const sideNews = NEWS_LIST.slice(1);
+
+  const filteredProducts = getFilteredProducts();
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/icons/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+    <div className="flex flex-col min-h-screen bg-white">
+      {/* 1. Header component */}
+      <Header />
+
+      {/* Main Content Area */}
+      <main className="flex-1 w-full max-w-7xl mx-auto px-4 py-6 md:py-8 space-y-10 md:space-y-14">
+        {/* Section 1: Hero Area (Sidebar + Carousel) */}
+        <section className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          <div className="lg:col-span-1">
+            <CategorySidebar
+              activeCategory={activeCategory}
+              onSelectCategory={handleSelectCategory}
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+          </div>
+          <div className="lg:col-span-3">
+            <BannerCarousel />
+          </div>
+        </section>
+
+        {/* Section 2: Vouchers */}
+        <section id="khuyen-mai" className="space-y-4">
+          <div className="flex items-center gap-2 border-l-4 border-primary pl-3">
+            <h2 className="text-base md:text-lg font-extrabold text-gray-800 tracking-tight uppercase">
+              Mã giảm giá độc quyền
+            </h2>
+            <span className="bg-red-100 text-red-700 text-[10px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-0.5">
+              <Sparkles className="w-3 h-3" /> Siêu hời
+            </span>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+            {VOUCHERS.map((voucher) => (
+              <VoucherCard key={voucher.id} voucher={voucher} />
+            ))}
+          </div>
+        </section>
+
+        {/* Section 3: New Products */}
+        <section className="space-y-6">
+          <div className="bg-primary text-white font-extrabold px-5 py-3 rounded-2xl flex items-center justify-between shadow-sm">
+            <span className="tracking-wider uppercase text-sm md:text-base">
+              Sản phẩm mới nhất
+            </span>
+            <span className="text-[10px] md:text-xs bg-white/20 text-white px-3 py-1 rounded-full font-medium">
+              Vừa cập nhật
+            </span>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {NEW_PRODUCTS.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        </section>
+
+        {/* Section 4: Featured Products */}
+        <section id="san-pham-tieu-bieu" className="space-y-6 scroll-mt-24">
+          <div className="bg-primary text-white font-extrabold px-5 py-3 rounded-2xl flex items-center justify-between shadow-sm">
+            <span className="tracking-wider uppercase text-sm md:text-base">
+              {activeCategory === 'seasonal'
+                ? 'Sản phẩm sấy theo mùa'
+                : 'Sản phẩm tiêu biểu'}
+            </span>
+            <Link
+              href="/san-pham"
+              className="text-[10px] md:text-xs hover:underline flex items-center gap-1 font-medium bg-white/20 px-3 py-1 rounded-full"
+            >
+              Xem tất cả <ChevronRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+
+          {filteredProducts.length > 0 ? (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {filteredProducts.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-10 bg-white border border-gray-100 rounded-2xl">
+              <p className="text-gray-500 text-sm font-medium">
+                Không tìm thấy sản phẩm phù hợp.
+              </p>
+            </div>
+          )}
+
+          <div className="flex justify-center pt-2">
+            <Link
+              href="/san-pham"
+              className="bg-white hover:bg-gray-50 text-gray-700 hover:text-primary border border-gray-200 hover:border-primary/30 font-bold px-6 py-2.5 rounded-xl text-xs md:text-sm transition-all duration-200 flex items-center gap-2 shadow-sm"
+            >
+              Xem toàn bộ sản phẩm
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </section>
+
+        {/* Section 5: News */}
+        <section id="tin-tuc-section" className="space-y-6 scroll-mt-24">
+          <div className="bg-primary text-white font-extrabold px-5 py-3 rounded-2xl flex items-center justify-between shadow-sm">
+            <span className="tracking-wider uppercase text-sm md:text-base">
+              Tin tức | Mẹo vặt dinh dưỡng
+            </span>
+            <div className="flex items-center gap-1 text-[10px] md:text-xs font-medium">
+              <BookOpen className="w-3.5 h-3.5" /> Nông Lâm Blog
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Featured Post (Left) */}
+            <div className="lg:col-span-2 bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col justify-between group">
+              <div className="relative aspect-[16/9] w-full overflow-hidden">
+                <Image
+                  src={featuredNews.image}
+                  alt={featuredNews.title}
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <span className="absolute top-4 left-4 bg-primary text-white font-bold text-[10px] px-2.5 py-1 rounded-md uppercase tracking-wider">
+                  {featuredNews.category}
+                </span>
+              </div>
+              <div className="p-5 flex-1 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center gap-2 text-xs text-gray-400 mb-2 font-medium">
+                    <span>Đăng bởi {featuredNews.author}</span>
+                    <span>•</span>
+                    <span>{featuredNews.date}</span>
+                  </div>
+                  <h3 className="text-base md:text-lg font-bold text-gray-900 leading-snug group-hover:text-primary transition-colors line-clamp-2 mb-3">
+                    {featuredNews.title}
+                  </h3>
+                  <p className="text-xs md:text-sm text-gray-500 line-clamp-3 leading-relaxed mb-4">
+                    {featuredNews.excerpt}
+                  </p>
+                </div>
+                <Link
+                  href={`/tin-tuc/${featuredNews.id}`}
+                  className="text-xs font-bold text-primary hover:text-primary-dark inline-flex items-center gap-1 transition-colors"
+                >
+                  Đọc tiếp <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+            </div>
+
+            {/* List of side news (Right) */}
+            <div className="space-y-4">
+              {sideNews.map((news) => (
+                <div
+                  key={news.id}
+                  className="bg-white border border-gray-100 rounded-2xl p-4 flex gap-4 items-center shadow-sm hover:shadow-md transition-shadow group cursor-pointer"
+                >
+                  <div className="relative w-20 h-20 rounded-xl overflow-hidden bg-gray-50 shrink-0">
+                    <Image
+                      src={news.image}
+                      alt={news.title}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0 space-y-1">
+                    <span className="text-[10px] font-bold text-primary bg-primary/5 px-2 py-0.5 rounded-md uppercase tracking-wider">
+                      {news.category}
+                    </span>
+                    <h4 className="text-xs md:text-sm font-bold text-gray-900 group-hover:text-primary transition-colors line-clamp-2 leading-snug">
+                      {news.title}
+                    </h4>
+                    <span className="text-[10px] font-medium text-gray-400 block">
+                      {news.date}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex justify-center pt-2">
+            <Link
+              href="/tin-tuc"
+              className="bg-white hover:bg-gray-50 text-gray-700 hover:text-primary border border-gray-200 hover:border-primary/30 font-bold px-6 py-2.5 rounded-xl text-xs md:text-sm transition-all duration-200 flex items-center gap-2 shadow-sm"
+            >
+              Xem tất cả tin tức
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </section>
       </main>
+
+      {/* Footer component */}
+      <Footer />
+
+      {/* Floating utility buttons */}
+      <FloatingButtons />
     </div>
   );
 }

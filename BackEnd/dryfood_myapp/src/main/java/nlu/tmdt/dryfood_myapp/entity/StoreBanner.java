@@ -2,15 +2,16 @@ package nlu.tmdt.dryfood_myapp.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import nlu.tmdt.dryfood_myapp.enums.Status;
+import lombok.experimental.SuperBuilder;
+import nlu.tmdt.dryfood_myapp.enums.StoreStatus;
 
 @Entity
 @Table(name = "store_banners")
 @Getter
 @Setter
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class StoreBanner extends BaseEntity {
 
     @Id
@@ -36,5 +37,5 @@ public class StoreBanner extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", length = 50)
-    private Status status;
+    private StoreStatus status;
 }
