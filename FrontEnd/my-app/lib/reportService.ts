@@ -1,4 +1,4 @@
-import { getUserAccessToken } from './authService';
+import { getAccessToken } from './authService';
 
 const API_URL = 'http://localhost:8080/api/v1/reports';
 
@@ -28,7 +28,7 @@ export interface ReportDTO {
 
 export const reportService = {
   async getStores(): Promise<StoreSimpleDTO[]> {
-    const token = getUserAccessToken();
+    const token = getAccessToken();
     const response = await fetch(`${API_URL}/stores`, {
       headers: { Authorization: `Bearer ${token}` }
     });
@@ -38,12 +38,12 @@ export const reportService = {
   },
 
   async createReport(data: ReportRequest): Promise<void> {
-    const token = getUserAccessToken();
+    const token = getAccessToken();
     const response = await fetch(API_URL, {
       method: 'POST',
-      headers: { 
+      headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}` 
+        Authorization: `Bearer ${token}`
       },
       body: JSON.stringify(data)
     });
@@ -54,7 +54,7 @@ export const reportService = {
   },
 
   async getMyReports(): Promise<ReportDTO[]> {
-    const token = getUserAccessToken();
+    const token = getAccessToken();
     const response = await fetch(`${API_URL}/me`, {
       headers: { Authorization: `Bearer ${token}` }
     });
