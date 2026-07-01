@@ -105,29 +105,45 @@ public class AdminDataInitializer implements CommandLineRunner {
         }
 
         // Cập nhật lại ảnh bị hỏng (fix lỗi URL bizweb bị 404) hoặc bị sai
+        // Cập nhật lại toàn bộ 20 sản phẩm để khớp hoàn hảo 100% với 6 hình ảnh có sẵn
         java.util.List<nlu.tmdt.dryfood_myapp.entity.Product> allProducts = productRepository.findAll();
         boolean needsUpdate = false;
-        for (nlu.tmdt.dryfood_myapp.entity.Product p : allProducts) {
-            String pName = p.getName().toLowerCase();
-            String correctUrl = "/icons/mitsay.jpg"; // Default
+        
+        // Danh sách 20 sản phẩm chuẩn (phù hợp với 6 hình ảnh)
+        String[] newNames = {
+            "Mít sấy giòn 500g", "Mít sấy dẻo 200g", "Mít thái sấy mộc 300g", 
+            "Xoài sấy dẻo 200g", "Xoài sấy giòn 150g", "Xoài sấy đường phèn 300g", "Xoài sấy chua ngọt 250g",
+            "Hạt điều rang muối 400g", "Hạt điều rang bơ 300g", "Hạt điều vỏ lụa 500g",
+            "Thanh long đỏ sấy dẻo 150g", "Thanh long sấy giòn 200g", "Thanh long sấy nguyên trái 300g",
+            "Chuối sấy dẻo 500g", "Chuối sấy giòn 300g", "Chuối sấy mật ong mè 250g", "Chuối sấy nguyên trái 400g",
+            "Khoai lang sấy mật 300g", "Khoai môn sấy giòn 250g", "Khoai lang tím sấy 200g"
+        };
+        
+        String[] newImages = {
+            "/icons/mitsay.jpg", "/icons/mitsay.jpg", "/icons/mitsay.jpg",
+            "/icons/xoaisay.jpg", "/icons/xoaisay.jpg", "/icons/xoaisay.jpg", "/icons/xoaisay.jpg",
+            "/icons/hatdieu.jpg", "/icons/hatdieu.jpg", "/icons/hatdieu.jpg",
+            "/icons/thanhlong.jpg", "/icons/thanhlong.jpg", "/icons/thanhlong.jpg",
+            "/icons/chuoisaymatong.jpg", "/icons/chuoisaymatong.jpg", "/icons/chuoisaymatong.jpg", "/icons/chuoisaymatong.jpg",
+            "/icons/khoailang.jpg", "/icons/khoailang.jpg", "/icons/khoailang.jpg"
+        };
+        
+        for (int i = 0; i < allProducts.size(); i++) {
+            nlu.tmdt.dryfood_myapp.entity.Product p = allProducts.get(i);
+            int idx = i % newNames.length;
             
-            if (pName.contains("xoài")) correctUrl = "/icons/xoaisay.jpg";
-            else if (pName.contains("chuối")) correctUrl = "/icons/chuoisaymatong.jpg";
-            else if (pName.contains("điều") || pName.contains("macca") || pName.contains("dẻ") || pName.contains("đậu phộng") || pName.contains("hạt")) correctUrl = "/icons/hatdieu.jpg";
-            else if (pName.contains("khoai") || pName.contains("gừng")) correctUrl = "/icons/khoailang.jpg";
-            else if (pName.contains("thanh long") || pName.contains("mận") || pName.contains("nho") || pName.contains("bò") || pName.contains("gà")) correctUrl = "/icons/thanhlong.jpg";
-            else if (pName.contains("bưởi") || pName.contains("sầu riêng") || pName.contains("bánh tráng") || pName.contains("dừa")) correctUrl = "/icons/mitsay.jpg";
+            p.setName(newNames[idx]);
+            p.setDescription("Sản phẩm " + newNames[idx] + " thơm ngon, đạt chuẩn xuất khẩu. Hoàn toàn tự nhiên không chất bảo quản.");
             
             for (nlu.tmdt.dryfood_myapp.entity.ProductImage img : p.getImages()) {
-                if (img.getUrl() == null || img.getUrl().contains("bizweb.dktcdn.net") || !img.getUrl().equals(correctUrl)) {
-                    img.setUrl(correctUrl);
-                    needsUpdate = true;
-                }
+                img.setUrl(newImages[idx]);
             }
+            needsUpdate = true;
         }
+        
         if (needsUpdate) {
             productRepository.saveAll(allProducts);
-            log.info("Fixed broken and mismatched image URLs.");
+            log.info("Renamed all products to match the 6 local images perfectly.");
         }
     }
 
