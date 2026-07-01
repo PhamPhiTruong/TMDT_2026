@@ -1,8 +1,9 @@
 package nlu.tmdt.dryfood_myapp.entity;
 
-import java.math.BigDecimal;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "product_options")
@@ -27,9 +28,33 @@ public class ProductOption {
     @Column(name = "price_change", precision = 10, scale = 2)
     private BigDecimal priceChange;
 
-    @Column(name = "quantity")
-    private Integer quantity;
+    @Column(name = "quantity", nullable = false)
+    private Integer quantity;           // ← Đảm bảo không null
 
     @Column(name = "status", length = 50)
     private String status;
+
+    // ==================== HELPER METHODS ====================
+
+    /**
+     * Kiểm tra còn hàng không
+     */
+    public boolean isAvailable() {
+        return "ACTIVE".equals(status) && quantity != null && quantity > 0;
+    }
+
+    /**
+     * Kiểm tra đủ số lượng yêu cầu
+     */
+    public boolean hasEnoughStock(int requestedQuantity) {
+        return quantity != null && quantity >= requestedQuantity;
+    }
+
+    /**
+     * Giá cuối cùng = giá gốc + priceChange
+     */
+    public BigDecimal getFinalPrice(BigDecimal basePrice) {
+        if (priceChange == null) return basePrice;
+        return basePrice.add(priceChange);
+    }
 }

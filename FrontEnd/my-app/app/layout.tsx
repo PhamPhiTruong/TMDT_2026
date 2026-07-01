@@ -1,8 +1,13 @@
 import type { Metadata } from "next";
-import { Roboto, Geist_Mono } from "next/font/google";
+import { Roboto, Geist_Mono, Geist } from "next/font/google";
 import "../styles/globals.css";
 import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
+import { cn } from "@/lib/utils";
+import QueryProvider from "@/providers/QueryProviders";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+
+const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
 
 const roboto = Roboto({
   variable: "--font-roboto",
@@ -28,14 +33,17 @@ export default function RootLayout({
   return (
     <html
       lang="vi"
-      className={`${roboto.variable} ${geistMono.variable} h-full antialiased`}
+      className={cn("h-full", "antialiased", roboto.variable, geistMono.variable, "font-sans", geist.variable)}
     >
       <body className="min-h-full flex flex-col">
-        <AuthProvider>
-          <CartProvider>
-            {children}
-          </CartProvider>
-        </AuthProvider>
+        <QueryProvider>
+          <AuthProvider>
+            <CartProvider>
+              {children}
+            </CartProvider>
+          </AuthProvider>
+          {process.env.NODE_ENV === "development" && <ReactQueryDevtools initialIsOpen={false} />}
+        </QueryProvider>
       </body>
     </html>
   );

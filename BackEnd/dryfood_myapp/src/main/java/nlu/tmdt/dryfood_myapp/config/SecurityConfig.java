@@ -1,4 +1,4 @@
-    package nlu.tmdt.dryfood_myapp.config;
+package nlu.tmdt.dryfood_myapp.config;
 
 import java.util.List;
 
@@ -27,7 +27,7 @@ import nlu.tmdt.dryfood_myapp.security.JwtAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity   // bật @PreAuthorize / @PostAuthorize
+@EnableMethodSecurity   // Bật @PreAuthorize / @PostAuthorize
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -39,52 +39,59 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(AbstractHttpConfigurer::disable)
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .sessionManagement(session ->
-                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(auth -> auth
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
 
-                // ── Preflight CORS ──────────────────────────────────────────
-                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        // ── Preflight CORS ──────────────────────────────────────────
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
-                // ── Auth endpoints (public) ─────────────────────────────────
-                .requestMatchers(HttpMethod.POST,
-                    "/api/auth/register",
-                    "/api/auth/login",
-                    "/api/auth/google"
-                ).permitAll()
+                        // ── Auth endpoints (public) ─────────────────────────────────
+                        .requestMatchers(HttpMethod.POST,
+                                "/api/auth/register",
+                                "/api/auth/login",
+                                "/api/auth/google"
+                        ).permitAll()
 
-                // ── Guest: xem sản phẩm & Q&A ──────────────────────────────
-                .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/v1/public/products/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/questions/**").permitAll()
+                        // ── Guest: xem sản phẩm & Q&A ──────────────────────────────
+                        .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/public/products/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/questions/**").permitAll()
 
-                // ── Thông tin cá nhân (USER + STORE_OWNER) ──────────────────
-                .requestMatchers("/api/v1/users/me").hasAnyRole("USER", "STORE_OWNER")
+                        // 🌟 LUỒNG THANH TOÁN (MOMO & OTP): Cho phép USER thực hiện ──
+                        .requestMatchers("/api/v1/orders/*/payment-request").hasRole("USER")
+                        .requestMatchers("/api/v1/orders/*/payment-verify").hasRole("USER")
 
-                // ── Giỏ hàng: chỉ USER (khách mua hàng) ───────────────────
-                .requestMatchers("/api/cart/**").hasRole("USER")
+                        // 🌟 IPN WEBHOOK CỦA MOMO: Bắt buộc mở công khai (PermitAll) để Server MoMo gọi về cứu dữ liệu
+                        .requestMatchers("/api/v1/orders/momo-ipn").permitAll()
 
-                // ── Địa chỉ: USER + STORE_OWNER đều có địa chỉ cá nhân ────
-                .requestMatchers("/api/v1/addresses/**").hasAnyRole("USER", "STORE_OWNER")
+                        // ── Thông tin cá nhân (USER + STORE_OWNER) ──────────────────
+                        .requestMatchers("/api/v1/users/me").hasAnyRole("USER", "STORE_OWNER")
 
-                // ── Đặt câu hỏi: USER ───────────────────────────────────────
-                .requestMatchers(HttpMethod.POST, "/api/questions").hasRole("USER")
+                        // ── Giỏ hàng: chỉ USER (khách mua hàng) ───────────────────
+                        .requestMatchers("/api/cart/**").hasRole("USER")
 
-                // ── Store Dashboard & quản lý shop: chỉ STORE_OWNER ─────────
-                .requestMatchers("/api/store/**").hasRole("STORE_OWNER")
+                        // ── Địa chỉ: USER + STORE_OWNER đều có địa chỉ cá nhân ────
+                        .requestMatchers("/api/v1/addresses/**").hasAnyRole("USER", "STORE_OWNER")
 
-                // ── Trả lời Q&A với tư cách chủ shop: chỉ STORE_OWNER ───────
-                .requestMatchers(HttpMethod.POST, "/api/questions/*/answer").hasRole("STORE_OWNER")
+                        // ── Đặt câu hỏi: USER ───────────────────────────────────────
+                        .requestMatchers(HttpMethod.POST, "/api/questions").hasRole("USER")
 
-                // ── Admin: Quản lý ──────────────────────────────────────────
-                .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        // ── Admin: Quản lý ──────────────────────────────────────────
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
 
-                // ── Mọi request còn lại phải đăng nhập ──────────────────────
-                .anyRequest().authenticated()
-            )
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                        // ── Store Dashboard & quản lý shop: chỉ STORE_OWNER ─────────
+                        .requestMatchers("/api/store/**").hasRole("STORE_OWNER")
+
+                        // ── Trả lời Q&A với tư cách chủ shop: chỉ STORE_OWNER ───────
+                        .requestMatchers(HttpMethod.POST, "/api/questions/*/answer").hasRole("STORE_OWNER")
+
+                        // ── Mọi request còn lại phải đăng nhập ──────────────────────
+                        .anyRequest().authenticated()
+                )
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -106,7 +113,6 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
     @Bean
     public UserDetailsService userDetailsService(UserRepository userRepository) {
         return username -> userRepository.findByEmail(username)

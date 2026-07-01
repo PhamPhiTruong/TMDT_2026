@@ -13,37 +13,16 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
-  const { setCartItems } = useCart();
+  const { addToCart } = useCart();
   const [added, setAdded] = useState(false);
 
-  const handleAddToCart = (e: React.MouseEvent) => {
+  const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     
     if (product.isOutOfStock || product.price === 0) return;
 
-    // Lấy tên ngắn gọn trước dấu |
-    const displayName = product.name.split('|')[0].trim();
-
-    setCartItems((prevItems) => {
-      const existing = prevItems.find((item) => item.id === product.id);
-      if (existing) {
-        return prevItems.map((item) =>
-          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-        );
-      }
-      return [
-        ...prevItems,
-        {
-          id: product.id,
-          name: displayName,
-          price: product.price,
-          quantity: 1,
-          checked: true,
-          image: product.image,
-        },
-      ];
-    });
+    await addToCart(product.id, null, 1);
 
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);

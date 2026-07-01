@@ -7,9 +7,8 @@ import org.springframework.http.HttpStatus;
 import lombok.Getter;
 
 @Getter
-@FieldDefaults(level = AccessLevel.PRIVATE,  makeFinal = true)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
-
 public enum ErrorCode {
     UNCATEGORIZED_EXCEPTION(9999, "Uncategorized error", HttpStatus.INTERNAL_SERVER_ERROR),
     INVALID_KEY(1001, "Uncategorized error key", HttpStatus.BAD_REQUEST),
@@ -23,37 +22,37 @@ public enum ErrorCode {
     VALIDATION_ERROR(1009, "Validation failed", HttpStatus.BAD_REQUEST),
     INVALID_PASSWORD(1010, "Mật khẩu không chính xác", HttpStatus.BAD_REQUEST),
 
-    // Store
+    // Store (2xxx)
     STORE_ALREADY_EXISTS(2001, "Store already exists for this user", HttpStatus.CONFLICT),
     STORE_NOT_FOUND(2002, "Store not found", HttpStatus.NOT_FOUND),
     FORBIDDEN_STORE_ACCESS(2003, "You do not have permission to access this store", HttpStatus.FORBIDDEN),
     STORE_NAME_INVALID(2004, "Store name is invalid", HttpStatus.BAD_REQUEST),
     STORE_PHONE_INVALID(2005, "Store phone is invalid", HttpStatus.BAD_REQUEST),
 
-    // Product
+    // Product (3xxx)
     PRODUCT_NOT_FOUND(3001, "Product not found", HttpStatus.NOT_FOUND),
     PRODUCT_ALREADY_ON_STORE(3002, "Product already on store", HttpStatus.CONFLICT),
     PRODUCT_NOT_IN_STORE(3003, "Product does not belong to this store", HttpStatus.BAD_REQUEST),
     STORE_PRODUCT_NOT_FOUND(3004, "Store product not found", HttpStatus.NOT_FOUND),
-    INVALID_PRODUCT(3002, "Invalid product", HttpStatus.BAD_REQUEST),
+    INVALID_PRODUCT(3005, "Invalid product", HttpStatus.BAD_REQUEST), // Giữ mã 3005 để tránh trùng lặp
 
-    // Banner
+    // Banner (4xxx)
     BANNER_NOT_FOUND(4001, "Banner not found", HttpStatus.NOT_FOUND),
 
-    // Address
+    INVALID_BANNER(4002, "Invalid banner", HttpStatus.BAD_REQUEST),
+
+    // Address (5xxx)
     ADDRESS_NOT_FOUND(5001, "Địa chỉ không tồn tại hoặc không thuộc về bạn", HttpStatus.NOT_FOUND),
     ADDRESS_LIMIT_EXCEEDED(5002, "Bạn đã đạt giới hạn tối đa 5 địa chỉ", HttpStatus.BAD_REQUEST),
     ADDRESS_CANNOT_DELETE_ONLY_DEFAULT(5003, "Không thể xóa địa chỉ mặc định duy nhất, vui lòng thêm địa chỉ khác trước", HttpStatus.BAD_REQUEST),
-    INVALID_BANNER(4002, "Invalid banner", HttpStatus.BAD_REQUEST),
 
-    // Coupon
-    COUPON_NOT_FOUND(5001, "Coupon not found", HttpStatus.NOT_FOUND),
-    COUPON_ALREADY_EXISTS(5002, "Coupon already exists", HttpStatus.CONFLICT),
-    INVALID_COUPON(5003, "Invalid coupon", HttpStatus.BAD_REQUEST),
+    // Coupon (6xxx)
+    COUPON_NOT_FOUND(6001, "Coupon not found", HttpStatus.NOT_FOUND),
+    COUPON_ALREADY_EXISTS(6002, "Coupon already exists", HttpStatus.CONFLICT),
+    INVALID_COUPON(6003, "Invalid coupon", HttpStatus.BAD_REQUEST)
     ;
 
     int code;
     String message;
     HttpStatus httpStatus;
-
 }

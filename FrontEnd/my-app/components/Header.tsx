@@ -2,12 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useCart } from '../app/context/CartContext';
 import { useAuth } from '../app/context/AuthContext';
-import { ShoppingCart, User, MessageSquare, ClipboardList, Search, Menu, X, Phone } from 'lucide-react';
+import { ShoppingCart, User, MessageSquare, ClipboardList, BarChart3, Search, Menu, X, Phone } from 'lucide-react';
 
-import { useRouter, useSearchParams } from 'next/navigation';
-
+import { useSearchParams } from 'next/navigation';
 export default function Header() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -42,7 +42,8 @@ export default function Header() {
     return () => clearTimeout(timer);
   }, []);
 
-  const totalItems = mounted
+  // Tính toán số lượng sản phẩm dựa trên dữ liệu thực tế từ CartContext
+  const totalItems = mounted && cartItems
     ? cartItems.reduce((acc, item) => acc + item.quantity, 0)
     : 0;
 
@@ -105,9 +106,18 @@ export default function Header() {
 
         {/* Action icons / Quick links */}
         <div className="flex items-center gap-2 md:gap-5">
-          {/* Order Lookup */}
+          {/* 📊 NÚT CHI TIÊU (Giao diện Máy tính) */}
           <Link
-            href="#"
+            href="/spending"
+            className="flex flex-col items-center text-gray-600 hover:text-primary transition-all group"
+          >
+            <BarChart3 className="w-5 h-5 group-hover:scale-105 transition-transform" />
+            <span className="text-[10px] font-bold mt-1 hidden sm:inline-block">Chi tiêu</span>
+          </Link>
+
+          {/* 📋 NÚT ĐƠN HÀNG (Giao diện Máy tính) */}
+          <Link
+            href="/order"
             className="flex flex-col items-center text-gray-600 hover:text-primary transition-all group"
           >
             <ClipboardList className="w-5 h-5 group-hover:scale-105 transition-transform" />
@@ -166,7 +176,7 @@ export default function Header() {
             </Link>
           )}
 
-          {/* Cart */}
+          {/* 🛒 Giỏ hàng thực tế */}
           <Link
             href="/cart"
             className="flex flex-col items-center text-gray-600 hover:text-primary transition-all relative group"
@@ -174,7 +184,7 @@ export default function Header() {
             <div className="relative">
               <ShoppingCart className="w-5 h-5 group-hover:scale-105 transition-transform" />
               {totalItems > 0 && (
-                <span className="absolute -top-2 -right-2 bg-red-500 text-white font-black text-[9px] w-4.5 h-4.5 rounded-full flex items-center justify-center border-2 border-white shadow-sm">
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white font-black text-[9px] w-5 h-5 rounded-full flex items-center justify-center border-2 border-white shadow-sm animate-pulse">
                   {totalItems}
                 </span>
               )}
@@ -247,6 +257,24 @@ export default function Header() {
             </button>
           </form>
           <nav className="flex flex-col gap-3 font-semibold text-gray-700">
+            {/* 📊 NÚT CHI TIÊU (Giao diện Điện thoại) */}
+            <Link
+              href="/spending"
+              onClick={() => setMobileMenuOpen(false)}
+              className="hover:text-primary py-1 border-b border-gray-50 flex items-center gap-2 text-primary font-bold"
+            >
+              <BarChart3 className="w-4 h-4" /> Thống kê chi tiêu
+            </Link>
+
+            {/* 📋 NÚT ĐƠN HÀNG (Giao diện Điện thoại) */}
+            <Link
+              href="/order"
+              onClick={() => setMobileMenuOpen(false)}
+              className="hover:text-primary py-1 border-b border-gray-50 flex items-center gap-2 text-gray-600"
+            >
+              <ClipboardList className="w-4 h-4" /> Đơn hàng
+            </Link>
+            
             <Link
               href="/"
               onClick={() => setMobileMenuOpen(false)}

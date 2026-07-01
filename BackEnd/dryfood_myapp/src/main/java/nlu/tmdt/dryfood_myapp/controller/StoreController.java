@@ -60,7 +60,7 @@ public class StoreController {
                 .build();
     }
 
-    // --- Quản lý vận hành (Dashboard & Kho hàng từ nhánh của bạn) ---
+    // --- Quản lý vận hành (Dashboard & Kho hàng) ---
 
     /**
      * GET /api/v1/store/dashboard
@@ -68,7 +68,6 @@ public class StoreController {
      */
     @GetMapping("/dashboard")
     public ApiResponse<Object> getDashboard(Authentication authentication) {
-        // TODO: inject thêm service hoặc dùng storeService để lọc thống kê theo getCurrentUserId()
         return ApiResponse.builder()
                 .code(200)
                 .message("Dashboard data fetched successfully")
@@ -82,7 +81,6 @@ public class StoreController {
      */
     @GetMapping("/inventory")
     public ApiResponse<Object> getInventory(Authentication authentication) {
-        // TODO: inventoryService.getByStore(getCurrentUserId())
         return ApiResponse.builder()
                 .code(200)
                 .message("Danh sách kho hàng")

@@ -25,15 +25,15 @@ import org.springframework.transaction.annotation.Transactional;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class StoreService {
 
-    public Store getStoreByOwner(Integer ownerId) {
-        return storeRepository.findByOwnerUserId(ownerId)
-                .orElseThrow(() -> new nlu.tmdt.dryfood_myapp.exception.AppException(
-                        nlu.tmdt.dryfood_myapp.exception.ErrorCode.STORE_NOT_FOUND
-                ));
-    }
     StoreRepository storeRepository;
     UserRepository userRepository;
     StoreMapper storeMapper;
+
+    // Giữ lại hàm Public dùng chung cho toàn bộ hệ thống
+    public Store getStoreByOwner(Integer ownerId) {
+        return storeRepository.findByOwnerUserId(ownerId)
+                .orElseThrow(() -> new AppException(ErrorCode.STORE_NOT_FOUND));
+    }
 
     public StoreResponse createStore(CreateStoreRequest request, Integer ownerId) {
         if (storeRepository.existsByOwnerUserId(ownerId)) {
