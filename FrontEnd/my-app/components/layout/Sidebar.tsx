@@ -29,7 +29,7 @@ const menus = [
     },
     {
         title: "Products",
-        href: "/products",
+        href: "/dashboard/products",
         icon: Package,
     },
     {
@@ -38,8 +38,8 @@ const menus = [
         icon: Image,
     },
     {
-        title: "Coupons",
-        href: "/coupons",
+        title: "Vouchers",
+        href: "/dashboard/coupons",
         icon: TicketPercent,
     },
     {
